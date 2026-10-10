@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="128" viewBox="0 0 440 128" role="img" aria-label="La Qualia"><title>La Qualia — le potentiel en effervescence</title><g fill="none" stroke-width="17" stroke-linecap="butt">
+<path d="M28 42A35 35 0 0 1 57 31" stroke="#ff5a00"/>
+<path d="M24 47A35 35 0 0 0 25 85" stroke="#ff735c"/>
+<path d="M29 91A35 35 0 0 0 72 96" stroke="#401098"/>
+<path d="M79 91A35 35 0 0 0 90 62" stroke="#005dff"/>
+</g>
+<path d="M64 27 86 32 81 48 65 43Z" fill="#c7ff00"/>
+<path d="M90 38 104 28 113 42 99 50Z" fill="#ff735c"/>
+<path d="M79 18 83 4 93 8 91 23Z" fill="#ff5a00"/>
+<path d="M105 20 119 11 124 20 111 29Z" fill="#401098"/>
+<path d="M109 56 125 53 127 63 112 65Z" fill="#c7ff00"/>
+<path d="M107 77 120 83 115 93 104 85Z" fill="#ff5a00"/>
+<path d="M64 78 80 75 108 109 90 111Z" fill="#005dff"/>
+<path d="M99 117 111 114 117 122 105 126Z" fill="#ff735c"/>
+<circle cx="59" cy="15" r="4" fill="#005dff"/>
+<circle cx="123" cy="37" r="3" fill="#ff5a00"/>
+<text x="148" y="85" font-family="DejaVu Sans,Arial,sans-serif" font-size="50" font-weight="700" letter-spacing="-2.5" fill="#111111">La Qualia</text></svg>
