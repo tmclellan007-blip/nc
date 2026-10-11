@@ -541,3 +541,10 @@
 /* Header : plus de légende sous la photo */
 .hero-photo{bottom:10px;height:calc(100% - 22px)}
 @media(max-width:640px){.hero-photo{bottom:6px;height:calc(100% - 14px)}.hero-visual{padding-bottom:0}.hero{padding-bottom:40px}}
+
+/* Engagement : aucune plateforme propriétaire */
+.approach-note{position:relative;margin-top:24px;max-width:560px;padding:17px 22px 17px 26px;border-radius:14px;background:#fff;border:1px solid #1a0b4a14;box-shadow:0 8px 22px #1a0b4a0d;overflow:hidden}
+.approach-note .an-bar{position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,#ff5a00,#ff735c,#401098,#005dff,#c7ff00)}
+.approach-copy .approach-note p{max-width:none;margin:0;font-size:15.5px;line-height:1.6;color:#55565d}
+.approach-note strong{display:block;margin-bottom:3px;font-size:17px;line-height:1.35;font-weight:800;letter-spacing:-.015em;color:var(--ink)}
+@media(max-width:760px){.approach-note{max-width:none;padding:15px 18px 15px 22px}.approach-copy .approach-note p{font-size:15px}.approach-note strong{font-size:16px}}
