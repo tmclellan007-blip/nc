@@ -256,11 +256,20 @@
 .pil-stage{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
 .pil-note{font-size:12px;color:#8a8a92;margin:16px 0 0;text-align:center}
 /* thèmes */
-.pil--formed{--band:#5215b9;--hl:#c7ff00;background:radial-gradient(70% 60% at 82% 6%,#efe9ff,transparent),radial-gradient(60% 55% at 6% 92%,#f0ecff,transparent),#faf9ff}
+.pil--formed{--band:#5215b9;--hl:#c7ff00;background:radial-gradient(78% 70% at 84% 0%,#e3d7ff,transparent),linear-gradient(180deg,#ece3ff,#f7f3ff)}
 .pil--formed .pil-eyebrow{color:#5215b9}
-.pil--tooled{--band:#005dff;--hl:#c7ff00;background:radial-gradient(70% 60% at 12% 6%,#e7f0ff,transparent),radial-gradient(60% 55% at 92% 90%,#eafbe0,transparent),#f6f9ff}
+.pil--tooled{--band:#005dff;--hl:#c7ff00;background:radial-gradient(95% 90% at 15% -14%,#182c58,transparent),radial-gradient(75% 75% at 98% 112%,#122044,transparent),#0a1230}
+.pil--tooled h3{color:#fff}
+.pil--tooled .pil-eyebrow{color:#86aaff}
+.pil--tooled .pil-lead{color:#c4cce2}
+.pil--tooled .pil-note{color:#8591ad}
+.pil--tooled .pil-feats li{background:#16213f;border-color:#ffffff22;color:#e9edf8;box-shadow:0 10px 24px #00000033}
+.pil--tooled .pil-feats .fi{background:#2a63ff}
+.pil--tooled .b1{background:#2b57c9;opacity:.4}
+.pil--tooled .b2{background:#c7ff00;opacity:.22}
+.pil--tooled .pil-slash{color:#fff;opacity:.08}
 .pil--tooled .pil-eyebrow{color:#005dff}
-.pil--encadre{--band:#ff5a00;--hl:#ff9f85;background:radial-gradient(70% 60% at 85% 8%,#ffe9dd,transparent),radial-gradient(60% 55% at 8% 92%,#fff0d9,transparent),#fff8f4}
+.pil--encadre{--band:#ff5a00;--hl:#ff9a6b;background:radial-gradient(78% 70% at 86% 2%,#ffd2b4,transparent),linear-gradient(180deg,#ffe4d1,#fff4ec)}
 .pil--encadre .pil-eyebrow{color:#ff5a00}
 /* blobs décoratifs */
 .pil-blob{position:absolute;z-index:1;border-radius:46% 54% 57% 43%/48% 44% 56% 52%;opacity:.55;filter:blur(1px);pointer-events:none}
