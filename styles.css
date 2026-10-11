@@ -496,3 +496,4 @@
 @media(max-width:400px){.hub{grid-template-columns:1fr}.hc{min-height:118px}}
 .evolution{overflow-x:clip}
 .hero h1 .u{background:linear-gradient(transparent 63%,var(--lime) 63%,var(--lime) 91%,transparent 91%);-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hero h1 .eyebrow{display:block}
