@@ -402,3 +402,54 @@
 .approach-pillar i{width:8px;height:8px;border-radius:2px;transform:rotate(-12deg);flex:none}
 .ap-orange{background:var(--orange)}.ap-blue{background:var(--blue)}.ap-purple{background:var(--purple)}
 @media(max-width:760px){.approach-intro{padding-top:36px;padding-bottom:28px}.approach-bridge{grid-template-columns:1fr;gap:22px}.approach-heading h2{font-size:clamp(29px,7.3vw,40px);letter-spacing:-1px}.approach-copy p{font-size:15px;max-width:none}.approach-path{gap:12px 20px;margin-top:24px;padding-top:18px}.approach-path-label{flex-basis:100%;margin:0}.approach-pillar{font-size:12px}}
+
+/* ===== Le potentiel humain : hub de bénéfices ===== */
+.potential{padding:85px 0 100px}
+.hub{--w:1330;position:relative;container-type:inline-size;width:min(1180px,100%);aspect-ratio:1330/715;margin:44px auto 0}
+.hub-lines{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:visible}
+.ln{opacity:.9;transition:opacity .25s,stroke-width .25s}
+.hub-ring{position:absolute;z-index:2;left:38.12%;top:27.55%;width:23.76%;aspect-ratio:1;border-radius:50%;padding:1.35cqw;background:conic-gradient(#ff735c 0deg,#ff9c19 26deg,#d6ff2a 90deg,#7ad100 112deg,#7a2cf0 180deg,#005dff 228deg,#ff9c19 282deg,#ff735c 360deg);box-shadow:0 14px 40px #40109824}
+.hub-photo{width:100%;height:100%;border-radius:50%;border:.55cqw solid #fff;background:#fff;overflow:hidden}
+.hub-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.hc{--accent:#ffa322;--icon:#fff;position:absolute;z-index:3;display:flex;flex-direction:column;justify-content:space-between;gap:1cqw;padding:1.9cqw 1.9cqw 1.5cqw;text-align:left;font:inherit;color:var(--ink);cursor:pointer;background:#fff;border:2px solid transparent;border-radius:1.7cqw;box-shadow:0 1.3cqw 3.2cqw color-mix(in srgb,var(--accent),transparent 76%);transition:transform .25s,box-shadow .25s,border-color .25s}
+.hc:hover,.hc:focus-visible,.hc[aria-pressed=true]{transform:translateY(-.5cqw);box-shadow:0 1.6cqw 4cqw color-mix(in srgb,var(--accent),transparent 52%)}
+.hc[aria-pressed=true]{border-color:color-mix(in srgb,var(--accent),#fff 35%)}
+.hc:focus-visible{outline:3px solid var(--purple);outline-offset:3px}
+.hc-top{display:flex;align-items:flex-start;justify-content:space-between;gap:1cqw}
+.hc-title{font-weight:800;font-size:clamp(12px,1.72cqw,22px);line-height:1.2;letter-spacing:-.02em}
+.hc-ic{flex:none;width:clamp(28px,3.8cqw,50px);aspect-ratio:1;border-radius:28%;display:grid;place-items:center;color:var(--icon);background:linear-gradient(145deg,color-mix(in srgb,var(--accent),#fff 14%),var(--accent));box-shadow:0 .5cqw 1.4cqw color-mix(in srgb,var(--accent),transparent 55%)}
+.hc-ic svg{width:56%;height:56%;fill:none;stroke:currentColor;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round}
+.hc-ic svg .fill{fill:currentColor;stroke:none}
+.hc-chart{display:block;width:100%;height:auto;margin-top:auto;overflow:visible}
+.hc-bars rect{fill:var(--accent);transform-box:fill-box;transform-origin:50% 100%}
+.hc-arrow{fill:none;stroke:var(--accent);stroke-width:3.4;stroke-linecap:round;opacity:.75;stroke-dasharray:1}
+.hc-head{fill:var(--accent)}
+.hc-eff{--accent:#ffa322;left:9.1%;top:0;width:25.6%;height:27.3%}
+.hc-skl{--accent:#ff735c;left:65.3%;top:0;width:25.6%;height:27.3%}
+.hc-aut{--accent:#ff5a4d;left:0;top:36.6%;width:26.8%;height:25.5%}
+.hc-cnf{--accent:#401098;left:73.2%;top:36.6%;width:26.8%;height:25.5%}
+.hc-ret{--accent:#005dff;left:9.1%;top:72.7%;width:25.6%;height:27.3%}
+.hc-bien{--accent:#b6f000;--icon:#1c3300;left:65.3%;top:72.7%;width:25.6%;height:27.3%}
+.hub:has(.hc-eff:is(:hover,:focus-visible,[aria-pressed=true])) .ln-eff,.hub:has(.hc-skl:is(:hover,:focus-visible,[aria-pressed=true])) .ln-skl,.hub:has(.hc-aut:is(:hover,:focus-visible,[aria-pressed=true])) .ln-aut,.hub:has(.hc-cnf:is(:hover,:focus-visible,[aria-pressed=true])) .ln-cnf,.hub:has(.hc-ret:is(:hover,:focus-visible,[aria-pressed=true])) .ln-ret,.hub:has(.hc-bien:is(:hover,:focus-visible,[aria-pressed=true])) .ln-bien{opacity:1;stroke-width:11}
+@media(prefers-reduced-motion:no-preference){
+@keyframes hc-rise{from{transform:scaleY(.08)}to{transform:scaleY(1)}}
+@keyframes hc-draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+.hc:is(:hover,:focus-visible) .hc-bars rect{animation:hc-rise .55s cubic-bezier(.2,.8,.2,1) both}
+.hc:is(:hover,:focus-visible) .hc-bars rect:nth-child(2){animation-delay:.05s}
+.hc:is(:hover,:focus-visible) .hc-bars rect:nth-child(3){animation-delay:.1s}
+.hc:is(:hover,:focus-visible) .hc-bars rect:nth-child(4){animation-delay:.15s}
+.hc:is(:hover,:focus-visible) .hc-bars rect:nth-child(5){animation-delay:.2s}
+.hc:is(:hover,:focus-visible) .hc-bars rect:nth-child(6){animation-delay:.25s}
+.hc:is(:hover,:focus-visible) .hc-arrow{animation:hc-draw .8s ease-out both}
+}
+@media(max-width:760px){
+.hub{aspect-ratio:auto;display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:28px}
+.hub-lines{display:none}
+.hub-ring{position:relative;left:auto;top:auto;grid-column:1/-1;width:min(210px,58%);justify-self:center;padding:10px;margin-bottom:8px}
+.hub-photo{border-width:5px}
+.hc{position:relative;left:auto;top:auto;width:auto;height:auto;min-height:132px;gap:10px;padding:14px 14px 12px;border-radius:16px}
+.hc-top{gap:8px}
+.hc-title{font-size:13px}
+.hc-ic{width:30px}
+.hc:hover,.hc:focus-visible,.hc[aria-pressed=true]{transform:none}
+}
