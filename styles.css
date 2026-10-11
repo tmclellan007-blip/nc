@@ -325,7 +325,6 @@
 .vc-bar{position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,#ff5a00,#ff735c,#401098,#005dff,#c7ff00)}
 .vc-bar.bar-ov{background:linear-gradient(90deg,#ff5a00,#ff735c,#401098)}
 .vc-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-top:6px}
-.vc-eyebrow{font-size:12px;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:#8d8d95;margin:6px 0 0}
 .vc-badge{flex:none;width:52px;height:52px;border-radius:15px;display:grid;place-items:center;color:#fff;box-shadow:0 8px 18px #0000001f}
 .vc-badge svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 .badge-lime{background:var(--lime);color:#2c3d00}
@@ -371,7 +370,6 @@
 .values{grid-template-columns:1fr}
 .mcard{position:relative;overflow:hidden;background:#fff;border:1px solid #ededed;border-radius:20px;box-shadow:0 18px 42px #16161610;display:grid;grid-template-columns:1.75fr 1fr}
 .mc-main{padding:42px 46px}
-.mc-main .vc-eyebrow{margin-top:0}
 .mc-main h2{font-size:clamp(30px,3.2vw,40px);letter-spacing:-1.2px;line-height:1.05;margin:16px 0 20px;font-weight:800}
 .mc-main .vc-body{font-size:16.5px;line-height:1.62;color:#45454e;margin:0 0 16px;max-width:620px}
 .mc-main .vc-body2{margin-bottom:0}
@@ -548,3 +546,8 @@
 .approach-copy .approach-note p{max-width:none;margin:0;font-size:15.5px;line-height:1.6;color:#55565d}
 .approach-note strong{display:block;margin-bottom:3px;font-size:17px;line-height:1.35;font-weight:800;letter-spacing:-.015em;color:var(--ink)}
 @media(max-width:760px){.approach-note{max-width:none;padding:15px 18px 15px 22px}.approach-copy .approach-note p{font-size:15px}.approach-note strong{font-size:16px}}
+
+.mc-main h2{margin-top:0}
+.mc-main{padding-top:44px}
+.mc-main h2{margin-bottom:20px}
+.mcv-tag{margin-top:6px}
