@@ -518,3 +518,10 @@
 @media(max-width:640px){.context-card{max-width:215px;padding:10px 12px 14px}.context-card strong{font-size:13px}.context-card small{font-size:12px}}
 .footer-coordinates .linkedin-link span{font-size:13px}
 @media(max-width:900px){.context-lines{display:none}.context-card{padding-bottom:12px}}
+/* Logo du header légèrement agrandi */
+.brand img{width:195px}
+@media(max-width:1100px){.brand img{width:172px}}
+@media(max-width:900px){.brand img{width:172px}}
+@media(max-width:640px){.header .brand img{width:160px}}
+@media(max-width:360px){.header .brand img{width:138px}}
+@media(min-width:901px) and (max-width:1100px){nav{gap:15px}nav>a{font-size:13px}nav>a.button.small{font-size:13px;padding:12px 14px;gap:8px}.nav-wrap{gap:20px}}
