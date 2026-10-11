@@ -319,3 +319,6 @@
 .pil--tooled .fr.dot{opacity:.75}
 .pil--tooled .fr.tri{opacity:.7}
 @media(max-width:640px){.pil-wm{width:62vw;opacity:.06}.fr.glow{width:150px;height:150px}.fr.dot,.fr.tri{display:none}}
+/* ===== Header : photo encadrée + orbite dynamique conservée ===== */
+.hero-photo{position:absolute;left:50%;bottom:30px;transform:translateX(-50%);height:calc(100% - 52px);width:auto;max-width:96%;border-radius:22px;box-shadow:0 26px 60px #20124a2b;z-index:1}
+@media(max-width:640px){.hero-photo{height:calc(100% - 44px);border-radius:18px}}
