@@ -305,3 +305,17 @@
 }
 .pil-figimg{margin:0;width:min(840px,100%)}
 .pil-figimg img{width:100%;height:auto;display:block;border-radius:22px;box-shadow:0 30px 60px #ff6a2420}
+/* ===== Décor effervescence (type logo), subtil et continu ===== */
+.pil-deco{position:absolute;inset:0;overflow:hidden;z-index:1;pointer-events:none}
+.pil-wm{position:absolute;width:min(560px,52vw);height:auto;opacity:.08}
+.pil--formed .pil-wm{left:-9%;bottom:-22%;transform:rotate(-8deg)}
+.pil--tooled .pil-wm{right:-7%;top:-20%;transform:rotate(10deg);opacity:.13}
+.pil--encadre .pil-wm{right:-9%;bottom:-22%;transform:rotate(6deg);opacity:.1}
+.fr{position:absolute}
+.fr.glow{width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,var(--c),transparent 66%);opacity:.5;filter:blur(3px)}
+.fr.dot{width:13px;height:13px;border-radius:50%;background:var(--c);opacity:.55;filter:blur(.4px)}
+.fr.tri{width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:15px solid var(--c);opacity:.5}
+.pil--tooled .fr.glow{opacity:.32;filter:blur(6px)}
+.pil--tooled .fr.dot{opacity:.75}
+.pil--tooled .fr.tri{opacity:.7}
+@media(max-width:640px){.pil-wm{width:62vw;opacity:.06}.fr.glow{width:150px;height:150px}.fr.dot,.fr.tri{display:none}}
