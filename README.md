@@ -8,7 +8,7 @@ La nouvelle direction visuelle suit le PPTX fourni : fond pâle, titres noirs im
 
 Le header utilise une employée et un chien détourés, des halos diffus, des orbites SVG et des cartes HTML cliquables « Formation », « Vos procédures » et « Accompagnement ». Le visuel a été généré/édité avec imagegen intégré : préserver l’employée en tenue bleue et le chien, retirer le décor et la table, créer un fond transparent et garder les visages dégagés. Il représente une scène illustrative. Le portrait au centre des six bénéfices provient de la diapositive 8.
 
-Le logo original est un Q fragmenté en effervescence, accompagné d’un mot-symbole. Les déclinaisons SVG/PNG pour fonds clairs et sombres et l’icône sont dans `dist/assets/`. Les PNG ont un fond transparent.
+Le logo est désormais le concept approuvé « 02 — Q facetté » : cinq facettes, une diagonale bleue et trois éclats. Le symbole a été reconstruit en tracés SVG, avec les cinq couleurs exactes. Le mot-symbole géométrique est vectorisé (URW Gothic Demi), sans dépendance à une police externe. Les déclinaisons SVG/PNG pour fonds clairs et sombres et l’icône sont dans `dist/assets/`. Les PNG ont un fond transparent.
 
 ## Éléments repris de l’ancien site fourni
 
@@ -42,3 +42,6 @@ Le navigateur de contrôle n’est pas disponible dans cet environnement. Le ren
 ## Protection des coordonnées
 
 Les coordonnées ne figurent plus en clair dans le HTML ni dans les données structurées. Les boutons « Afficher le courriel » et « Afficher le téléphone » les révèlent au clic, avec un lien mailto/tel et le focus clavier. Les valeurs sont encodées dans le JavaScript. Le formulaire reste accessible sans JavaScript. Il s’agit d’une réduction de la collecte par les robots simples, pas d’une protection absolue : un robot capable d’exécuter le code ou de décoder les valeurs peut les retrouver. Les anciennes versions ou le site historique peuvent également les contenir.
+
+## Mise à jour du 11 octobre 2026 — Q facetté
+Logo appliqué à l’en-tête, au pied de page, aux trois filigranes des piliers et au filigrane du pied de page. SVG et PNG transparents pour fonds clairs/sombres, favicon SVG/ICO/PNG, icône Apple et image de partage régénérés. Le site se déploie en plaçant le contenu de cette archive à la racine de l’hébergement (aucun dossier dist requis dans cette archive). Vérification structurelle et visuelle des exports effectuée ; rendu du site dans un navigateur non vérifié dans cette session.
