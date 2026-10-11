@@ -357,3 +357,16 @@
 .fdot-purple{background:var(--purple)}
 .fdot-orange{background:var(--orange)}
 @media(max-width:640px){.vcard{padding:26px 24px 0}.vcard h2{font-size:26px}.vc-foot{margin:0 -24px;padding:15px 24px}.flow-step small{font-size:11px}.flow-ic,.vc-badge{width:46px;height:46px}}
+/* ===== Footer foncé ===== */
+.footer-bleed{background:#0a1430}
+.footer{border-top:0;color:#d7dbe8}
+.footer>p{color:#9aa0b8}
+.footer>div{color:#9aa0b8}
+.footer>div span{color:#9aa0b8}
+.footer-link{color:#aeb4c9}
+.footer a{color:#e2e6f1}
+.footer-coordinates{color:#e2e6f1}
+.footer-coordinates .contact-reveal{color:#e2e6f1}
+.footer-coordinates .protected-contact{color:#e2e6f1}
+.footer .linkedin-link{color:#e2e6f1}
+.footer-bleed::after{opacity:.16}
