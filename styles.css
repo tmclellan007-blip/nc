@@ -497,3 +497,24 @@
 .evolution{overflow-x:clip}
 .hero h1 .u{background:linear-gradient(transparent 63%,var(--lime) 63%,var(--lime) 91%,transparent 91%);-webkit-box-decoration-break:clone;box-decoration-break:clone}
 .hero h1 .eyebrow{display:block}
+/* Notes sous les mocks : taille et contraste lisibles */
+.pil-note{font-size:16px;line-height:1.5;color:#55535c;max-width:780px;margin-inline:auto;text-wrap:balance}
+.pil--tooled .pil-note{color:#b4bdd6}
+@media(max-width:640px){.pil-note{font-size:15px}}
+/* Lisibilité : textes de contenu jamais sous 12-13px */
+.context-card{max-width:240px}
+.context-card strong{font-size:14px}
+.context-card small{font-size:12px;line-height:1.35}
+.chart-legend button{font-size:13px;padding:9px 12px}
+.growth-chart figcaption{font-size:13px;line-height:1.6}
+.menu-toggle{font-size:14px}
+.button.small{font-size:14px}
+.approach-heading .eyebrow{font-size:12px}
+.approach-path-label,.approach-pillar{font-size:13px}
+.pil-feats li{font-size:13px}
+.contact-form-panel label,form label{font-size:14px}
+.contact-data-note,.contact-data-note .footer-link{font-size:13px}
+.footer-coordinates .linkedin-link{font-size:13px}
+@media(max-width:640px){.context-card{max-width:215px;padding:10px 12px 14px}.context-card strong{font-size:13px}.context-card small{font-size:12px}}
+.footer-coordinates .linkedin-link span{font-size:13px}
+@media(max-width:900px){.context-lines{display:none}.context-card{padding-bottom:12px}}
