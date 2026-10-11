@@ -294,3 +294,5 @@
 .pil-stage .appwin{font-size:11px}
 .pil-stage .fx-head h4{font-size:18px}
 }
+.pil-figimg{margin:0;width:min(840px,100%)}
+.pil-figimg img{width:100%;height:auto;display:block;border-radius:22px;box-shadow:0 30px 60px #ff6a2420}
