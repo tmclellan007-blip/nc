@@ -370,3 +370,20 @@
 .footer-coordinates .protected-contact{color:#e2e6f1}
 .footer .linkedin-link{color:#e2e6f1}
 .footer-bleed::after{opacity:.16}
+/* ===== Mission (prédominante) + Valeur en une carte ===== */
+.values{grid-template-columns:1fr}
+.mcard{position:relative;overflow:hidden;background:#fff;border:1px solid #ededed;border-radius:20px;box-shadow:0 18px 42px #16161610;display:grid;grid-template-columns:1.75fr 1fr}
+.mc-main{padding:42px 46px}
+.mc-main .vc-eyebrow{margin-top:0}
+.mc-main h2{font-size:clamp(30px,3.2vw,40px);letter-spacing:-1.2px;line-height:1.05;margin:16px 0 20px;font-weight:800}
+.mc-main .vc-body{font-size:16.5px;line-height:1.62;color:#45454e;margin:0 0 16px;max-width:620px}
+.mc-main .vc-body2{margin-bottom:0}
+.mc-main .vc-body strong{color:#17171c}
+.mc-value{padding:42px 38px;background:#fff4ec;border-left:1px solid #ffe3d0;display:flex;flex-direction:column}
+.mcv-tag{font-size:11px;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:var(--orange);margin:0 0 12px}
+.mc-value h3{font-size:25px;letter-spacing:-.6px;line-height:1.08;margin:0 0 14px;font-weight:800}
+.mc-value>p{font-size:14.5px;line-height:1.6;color:#55535c;margin:0 0 22px}
+.mc-value .vc-checks{flex-direction:column;align-items:flex-start;gap:13px;border-top:0;padding:0;margin:auto 0 0}
+.mc-value .vc-checks li{font-size:14px}
+@media(max-width:820px){.mcard{grid-template-columns:1fr}.mc-value{border-left:0;border-top:1px solid #ffe3d0}}
+@media(max-width:640px){.mc-main{padding:30px 26px}.mc-value{padding:28px 26px}}
