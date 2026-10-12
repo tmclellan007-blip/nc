@@ -636,3 +636,9 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 .hx-copy.wrap{width:min(1280px,calc(100% - 96px))}
 @media(max-width:1100px){.hx-copy.wrap{width:calc(100% - 64px)}}
 @media(max-width:640px){.hx-copy.wrap{width:calc(100% - 40px)}}
+/* Transition hero → mission */
+.hx{padding-bottom:clamp(36px,5vw,72px)}
+.hx-stage{background:transparent;overflow:visible}
+.hx-photo{-webkit-mask-image:linear-gradient(180deg,#000 0,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 0,#000 72%,transparent 100%)}
+.hx-veil{background:linear-gradient(90deg,#f6f6f2f5 0,#f6f6f2e0 30%,#f6f6f27a 46%,#f6f6f200 62%),linear-gradient(0deg,#f6f6f2 0,#f6f6f2cc 14%,#f6f6f200 42%)}
+@media(max-width:900px){.hx-photo{-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 34%,#000 74%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 34%,#000 74%,transparent 100%)}.hx-copy.wrap{padding-bottom:380px}}
