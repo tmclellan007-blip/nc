@@ -746,3 +746,9 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 @media(prefers-reduced-motion:reduce){.pil:not(.is-open) .pil-toggle{animation:none}.pil-panel,.pil-panel-in,.pil .pil-head,.pt-ic::before,.pt-ic::after{transition:none}}
 @media(max-width:560px){.pil-toggle{width:100%;justify-content:flex-start;font-size:15px}}
 .pil-panel{grid-template-columns:minmax(0,1fr)}
+/* ===== L'impact sur vos équipes : illustration sur fond blanc ===== */
+.potential{background:#fff}
+.impact-fig{margin:clamp(12px,2vw,28px) auto 0;width:min(1180px,100%)}
+.impact-fig img{display:block;width:100%;height:auto}
+@media(min-width:701px){.potential .hub{display:none}}
+@media(max-width:700px){.impact-fig{display:none}}
