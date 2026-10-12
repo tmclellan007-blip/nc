@@ -628,3 +628,11 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 .hx-copy{padding-inline:max(24px,calc((100% - 1320px)/2 + 32px));padding-block:clamp(48px,6vw,88px);max-width:none;width:min(100%,calc(54% + 80px))}
 .hx-desc{max-width:480px}
 @media(max-width:900px){.hx-stage{min-height:0}.hx-copy{width:auto;padding:44px 24px 400px}.hx-photo{inset:auto 0 0 0;height:440px;object-position:50% 30%;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 38%);mask-image:linear-gradient(180deg,transparent 0,#000 38%)}}
+/* Texte aligné sur la largeur du site ; seule la photo est pleine largeur */
+.hx-copy.wrap{padding-inline:0;box-sizing:border-box;margin-inline:auto}
+.hx-copy.wrap>*{max-width:min(54%,560px)}
+.hx-copy.wrap>.hx-actions{max-width:none}
+@media(max-width:900px){.hx-copy.wrap{padding:44px 0 400px}.hx-copy.wrap>*{max-width:none}}
+.hx-copy.wrap{width:min(1280px,calc(100% - 96px))}
+@media(max-width:1100px){.hx-copy.wrap{width:calc(100% - 64px)}}
+@media(max-width:640px){.hx-copy.wrap{width:calc(100% - 40px)}}
