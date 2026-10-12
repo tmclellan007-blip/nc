@@ -719,3 +719,30 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 @media(max-width:420px){.hx-card{width:86%}.hx-frame{height:600px}}
 @media(min-width:901px) and (max-width:1180px){.hx-c3{display:flex;left:60%;top:8%}.hx-c1{top:26%}}
 @media(min-width:901px) and (max-width:1180px){.hx-c2{left:50%;top:44%}}
+/* ===== Aperçus repliables (Mieux formé / outillé / encadré) ===== */
+.pil-toggle{--tbg:var(--band);--tfg:#fff;--tring:var(--band);display:inline-flex;align-items:center;gap:14px;margin-top:30px;min-height:56px;padding:6px 26px 6px 8px;border:0;border-radius:99px;background:var(--tbg);color:var(--tfg);font:inherit;font-size:15.5px;font-weight:800;letter-spacing:-.005em;cursor:pointer;box-shadow:0 14px 30px #0a143040;transition:transform .2s,box-shadow .2s}
+.pil--tooled .pil-toggle{--tbg:#c7ff00;--tfg:#040f32;--tring:#c7ff00;box-shadow:0 14px 34px #c7ff0033}
+.pil--encadre .pil-toggle{--tbg:#040f32;--tfg:#fff;--tring:#ff5a00}
+.pil-toggle:hover{transform:translateY(-2px)}
+.pil-toggle:focus-visible,.pil-close:focus-visible{outline:3px solid currentColor;outline-offset:4px}
+.pt-ic{position:relative;flex:none;width:42px;height:42px;border-radius:50%;background:#ffffff2e}
+.pil--tooled .pt-ic{background:#040f3217}
+.pt-ic::before,.pt-ic::after{content:"";position:absolute;left:50%;top:50%;width:16px;height:2.5px;margin:-1.25px 0 0 -8px;border-radius:2px;background:currentColor;transition:transform .35s}
+.pt-ic::after{transform:rotate(90deg)}
+.pil.is-open .pt-ic::after{transform:rotate(0)}
+.pil:not(.is-open) .pil-toggle{animation:ptring 2.8s ease-out infinite}
+@keyframes ptring{0%{box-shadow:0 14px 30px #0a143040,0 0 0 0 color-mix(in srgb,var(--tring) 45%,transparent)}70%,100%{box-shadow:0 14px 30px #0a143040,0 0 0 16px transparent}}
+.pil-panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .6s cubic-bezier(.22,.8,.26,1)}
+.pil.is-open .pil-panel{grid-template-rows:1fr}
+.pil-panel-in{min-height:0;overflow-y:clip;overflow-x:visible;visibility:hidden;opacity:0;transition:opacity .45s ease,visibility 0s .6s}
+.pil.is-open .pil-panel-in{visibility:visible;opacity:1;transition:opacity .55s ease .1s,visibility 0s}
+.pil .pil-head{transition:margin-bottom .5s}
+.pil:not(.is-open) .pil-head{margin-bottom:0}
+.pil.is-open .pil-head{margin-bottom:clamp(30px,4vw,48px)}
+.pil-close{display:flex;align-items:center;gap:8px;margin:26px auto 0;padding:12px 22px;border:1.5px solid currentColor;border-radius:99px;background:transparent;color:var(--ink);font:inherit;font-size:14px;font-weight:800;cursor:pointer;position:relative;z-index:3;transition:background .2s,color .2s}
+.pil--tooled .pil-close{color:#fff}
+.pil-close:hover{background:var(--ink);color:#fff}
+.pil--tooled .pil-close:hover{background:#fff;color:#040f32}
+@media(prefers-reduced-motion:reduce){.pil:not(.is-open) .pil-toggle{animation:none}.pil-panel,.pil-panel-in,.pil .pil-head,.pt-ic::before,.pt-ic::after{transition:none}}
+@media(max-width:560px){.pil-toggle{width:100%;justify-content:flex-start;font-size:15px}}
+.pil-panel{grid-template-columns:minmax(0,1fr)}

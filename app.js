@@ -71,3 +71,26 @@ document.getElementById('year').textContent=String(new Date().getFullYear());
   btn.disabled = false; label.textContent = T.btn;
  });
 })();
+
+// Aperçus repliables : un clic déroule l'interface, un clic la replie.
+(() => {
+ const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+ document.querySelectorAll('.pil-toggle').forEach(btn => {
+  const pil = btn.closest('.pil'), panel = document.getElementById(btn.getAttribute('aria-controls'));
+  const label = btn.querySelector('.pt-l');
+  const warm = () => panel.querySelectorAll('img[loading="lazy"]').forEach(i => { i.loading = 'eager'; });
+  ['pointerenter', 'focus', 'touchstart'].forEach(ev => btn.addEventListener(ev, warm, {once: true, passive: true}));
+  const set = open => {
+   pil.classList.toggle('is-open', open);
+   btn.setAttribute('aria-expanded', String(open));
+   label.textContent = open ? btn.dataset.close : btn.dataset.open;
+   if (open) warm();
+  };
+  btn.addEventListener('click', () => set(!pil.classList.contains('is-open')));
+  pil.querySelectorAll('[data-pil-close]').forEach(close => close.addEventListener('click', () => {
+   set(false);
+   if (btn.getBoundingClientRect().top < 0) btn.scrollIntoView({block: 'center', behavior: reduce ? 'auto' : 'smooth'});
+   btn.focus({preventScroll: true});
+  }));
+ });
+})();
