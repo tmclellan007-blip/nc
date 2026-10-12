@@ -111,3 +111,10 @@ document.getElementById('year').textContent=String(new Date().getFullYear());
   }));
  });
 })();
+
+// Illustration « impact » : les graphiques se tracent une fois quand elle entre à l'écran.
+(() => {
+ const stage = document.querySelector('.impact-stage'); if (!stage || !('IntersectionObserver' in window)) return;
+ const io = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) { stage.classList.add('play'); io.disconnect(); setTimeout(() => stage.classList.remove('play'), 2200); } }, {threshold: .35});
+ io.observe(stage);
+})();
