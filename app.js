@@ -118,3 +118,11 @@ document.getElementById('year').textContent=String(new Date().getFullYear());
  const io = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) { stage.classList.add('play'); io.disconnect(); setTimeout(() => stage.classList.remove('play'), 2200); } }, {threshold: .35});
  io.observe(stage);
 })();
+
+// Barre du haut : capsule en verre dès qu'on défile ; le focus entre dans le menu à l'ouverture.
+(() => {
+ const header = document.querySelector('.header'); if (!header) return;
+ const f = () => header.classList.toggle('s', scrollY > 40); f(); addEventListener('scroll', f, {passive: true});
+ menuButton.addEventListener('click', () => { if (menuButton.getAttribute('aria-expanded') === 'true') setTimeout(() => { const l = nav.querySelector('a'); if (l) l.focus({preventScroll: true}); }, 450); });
+ document.addEventListener('keydown', e => { if (e.key === 'Escape') menuButton.focus({preventScroll: true}); });
+})();
