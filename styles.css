@@ -707,3 +707,13 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 @media(min-width:1181px) and (max-width:1500px){.hx-c1{left:53%}.hx-c3{left:78%}.hx-c2{left:42%}}
 .hx-pin{display:none!important}
 .hx-photo{opacity:.84}
+/* Mobile : les cartes se posent par-dessus la photo */
+@media(max-width:900px){
+ .hx-frame{display:block;position:relative;order:2;height:620px;overflow:hidden}
+ .hx-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:96% 36%;-webkit-mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 86%,transparent 100%);mask-image:linear-gradient(180deg,transparent 0,#000 14%,#000 86%,transparent 100%)}
+ .hx-ui{position:absolute;inset:auto 0 0 0;order:0;display:flex;flex-direction:column;gap:10px;padding:0 16px 34px;margin:0}
+ .hx-card{width:min(82%,330px);background:#ffffffd1}
+ .hx-c1,.hx-c3{align-self:flex-start}.hx-c2,.hx-c4{align-self:flex-end}
+ .hx-c3{display:flex}
+}
+@media(max-width:420px){.hx-card{width:86%}.hx-frame{height:600px}}
