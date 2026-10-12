@@ -787,3 +787,15 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 .ic:is(:hover,:focus-visible) .ic-bars rect:nth-child(5),.impact-stage.play .ic-bars rect:nth-child(5){animation-delay:.24s}
 .ic:is(:hover,:focus-visible) .ic-bars rect:nth-child(6),.impact-stage.play .ic-bars rect:nth-child(6){animation-delay:.3s}
 }
+/* ===== ESSAI : haut du site foncé (comme le pied de page) ===== */
+.header{background:#0a1430f2;border-bottom:1px solid #ffffff14;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px)}
+.header nav>a:not(.button){color:#e2e6f1}
+.header nav>a:not(.button):hover,.header nav>a:not(.button):focus-visible{color:#c7ff00}
+.header nav>a.button.small{background:#c7ff00;color:#040f32;box-shadow:0 10px 26px #c7ff0026}
+.header nav>a.button.small:hover{background:#d8ff4a}
+.lang-switch .ls-cur{color:#fff}
+.lang-switch a{color:#9aa0b8}
+.lang-switch a:hover,.lang-switch a:focus-visible{color:#c7ff00}
+.lang-switch i{background:#ffffff40}
+.menu-toggle{background:#ffffff12;border-color:#ffffff33;color:#fff}
+@media(max-width:900px){.header nav{background:#0a1430;border-bottom:1px solid #ffffff1f;box-shadow:0 18px 30px #0000004d}}
