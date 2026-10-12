@@ -717,3 +717,5 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
  .hx-c3{display:flex}
 }
 @media(max-width:420px){.hx-card{width:86%}.hx-frame{height:600px}}
+@media(min-width:901px) and (max-width:1180px){.hx-c3{display:flex;left:60%;top:8%}.hx-c1{top:26%}}
+@media(min-width:901px) and (max-width:1180px){.hx-c2{left:50%;top:44%}}
