@@ -821,3 +821,7 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 @keyframes lq-letter{0%{transform:translateY(520px) scale(.6);opacity:0}100%{transform:none;opacity:1}}
 @keyframes lq-tail{0%{transform:translate(420px,-260px) rotate(60deg) scale(.4);opacity:0}100%{transform:none;opacity:1}}
 @media(prefers-reduced-motion:reduce){.logo-anim .pc,.logo-anim .lt,.logo-anim .sq,.logo-anim .tail{animation:none!important;opacity:1!important;transform:none!important}}
+/* Carte Amélie : « Plus de 10 ans d'expérience » avec le détail en dessous */
+.founder-card ul ul{margin:6px 0 4px;padding-left:18px;font-weight:500;color:#45454e;list-style:circle}
+.founder-card ul ul li{font-size:.95em;line-height:1.45}
+.founder-card ul ul li+li{margin-top:2px}
