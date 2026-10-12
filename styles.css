@@ -808,10 +808,3 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 @media(min-width:1500px){.pil--formed .pil-stage .appwin,.pil--tooled .pil-stage .appwin,.pil--encadre .pil-stage .appwin{zoom:1.25}}
 @media(min-width:1700px){.pil--formed .pil-stage .appwin,.pil--tooled .pil-stage .appwin,.pil--encadre .pil-stage .appwin{zoom:1.4}}
 @media(min-width:641px){.pil--formed .pil-stage,.pil--tooled .pil-stage,.pil--encadre .pil-stage{width:min(1380px,calc(100vw - 96px))}}
-/* ESSAI : grand logo dont la queue du Q dépasse sous la barre */
-.header{overflow:visible}
-.header .brand{position:relative;z-index:3}
-.header .brand img{transform-origin:left center;transform:translateY(13px) scale(1.55);filter:drop-shadow(0 8px 14px #0a143055)}
-@media(min-width:901px) and (max-width:1100px){.header .brand img{transform:translateY(10px) scale(1.25)}}
-@media(max-width:900px){.header .brand img{transform:translateY(8px) scale(1.2)}}
-@media(max-width:480px){.header .brand img{transform:translateY(7px) scale(1.12)}}
