@@ -895,3 +895,21 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 @media(max-width:900px){.vid-card{max-width:340px}}
 @media(max-width:560px){.vid-card{max-width:100%}}
 @media(max-width:900px){.vid{grid-template-columns:minmax(0,1fr);row-gap:22px}.vid-card{grid-column:auto;grid-row:auto}.vid-head{grid-column:auto;grid-row:auto}}
+/* Vidéo : fondue dans le fond du site (multiply : le blanc de l'avatar prend la couleur de la page), bloc à moitié de largeur */
+.vid-card{isolation:auto;background:transparent;box-shadow:none;border-radius:0;overflow:visible}
+.vid-play img,.vid-el{mix-blend-mode:multiply;background:transparent}
+.vid-play::after{display:none}
+.vid-play:focus-visible{outline:3px solid #401098;outline-offset:4px;border-radius:18px}
+@media(min-width:901px){
+ .vid.wrap{width:min(680px,calc(100% - 96px));margin-inline:auto;grid-template-columns:minmax(0,260px) minmax(0,1fr);column-gap:clamp(24px,3vw,44px)}
+ .vid-card{max-width:260px}
+ .vid-head .section-title{font-size:clamp(26px,2.4vw,36px)}
+ .vid-head>p:last-child{font-size:15px;max-width:none}
+ .vid-cta{left:0;font-size:13px}
+ .vid-center{width:64px}
+}
+@media(max-width:900px){.vid-card{max-width:300px;margin-inline:auto}}
+/* Section vidéo : bande à fond blanc (pleine largeur de page), contenu sur la moitié */
+.vid{background:#fff;box-shadow:0 0 0 100vmax #fff;clip-path:inset(0 -100vmax);padding-block:clamp(40px,5vw,72px);margin-top:0}
+.vid-card{background:#fff}
+@media(min-width:901px){.vid.wrap{width:min(700px,calc(100% - 96px));grid-template-columns:minmax(0,280px) minmax(0,1fr)}.vid-card{max-width:280px}}
