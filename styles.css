@@ -883,3 +883,5 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 .vid-cta{font-size:13.5px;padding:8px 10px 8px 15px}
 @media(max-width:900px){.vid{grid-template-columns:1fr;gap:22px}.vid-card{max-width:560px}}
 @media(max-width:560px){.vid-card{max-width:none}}
+/* Vidéo à gauche, texte à droite (contraste avec le header) */
+@media(min-width:901px){.vid{grid-template-columns:minmax(0,640px) minmax(0,1fr)}.vid-card{grid-column:1;grid-row:1}.vid-head{grid-column:2;grid-row:1}}
