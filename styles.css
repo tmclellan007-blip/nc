@@ -885,3 +885,13 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 3px #c6
 @media(max-width:560px){.vid-card{max-width:none}}
 /* Vidéo à gauche, texte à droite (contraste avec le header) */
 @media(min-width:901px){.vid{grid-template-columns:minmax(0,640px) minmax(0,1fr)}.vid-card{grid-column:1;grid-row:1}.vid-head{grid-column:2;grid-row:1}}
+/* Vidéo avatar sur fond blanc : carte portrait 4:5 */
+.vid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+@media(min-width:901px){.vid{grid-template-columns:minmax(0,400px) minmax(0,1fr);column-gap:clamp(36px,6vw,96px)}}
+.vid-card{aspect-ratio:4/5;background:#fff;max-width:400px;width:100%}
+.vid-el{object-fit:cover;background:#fff}
+.vid-play::after{background:linear-gradient(0deg,#4010981a 0,#40109800 30%)}
+.vid-center{width:clamp(60px,15vw,76px)}
+@media(max-width:900px){.vid-card{max-width:340px}}
+@media(max-width:560px){.vid-card{max-width:100%}}
+@media(max-width:900px){.vid{grid-template-columns:minmax(0,1fr);row-gap:22px}.vid-card{grid-column:auto;grid-row:auto}.vid-head{grid-column:auto;grid-row:auto}}
