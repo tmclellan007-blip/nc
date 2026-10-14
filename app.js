@@ -113,3 +113,21 @@ document.getElementById('year').textContent=String(new Date().getFullYear());
  const io = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) { stage.classList.add('play'); io.disconnect(); setTimeout(() => stage.classList.remove('play'), 2200); } }, {threshold: .35});
  io.observe(stage);
 })();
+
+// Vidéo : le clic sur l'affiche lance la lecture (son activé) ; l'affiche revient à la fin pour revoir.
+(() => {
+ const card = document.querySelector('.vid-card'); if (!card) return;
+ const play = card.querySelector('.vid-play'), video = card.querySelector('.vid-el'), cta = card.querySelector('.vid-cta b');
+ const start = () => {
+  if (!video.getAttribute('src')) video.src = video.dataset.src;
+  video.hidden = false; card.classList.add('playing');
+  const p = video.play(); if (p && p.catch) p.catch(() => {});
+  video.focus({preventScroll: true});
+ };
+ play.addEventListener('click', start);
+ video.addEventListener('ended', () => {
+  card.classList.remove('playing'); video.hidden = true; video.currentTime = 0;
+  if (cta) cta.textContent = 'Revoir la vidéo';
+  play.focus({preventScroll: true});
+ });
+})();
