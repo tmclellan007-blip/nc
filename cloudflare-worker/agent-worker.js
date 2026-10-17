@@ -65,11 +65,13 @@ async function handlePost(request, env, cors) {
 
   const { config, chunks } = await loadKnowledge(request, env);
   const ctx = retrieve(chunks, question);
-  const ctxText = ctx.length
-    ? ctx.map((c) => `### [${c.title}]\n${c.text}`).join("\n\n")
-    : "(Aucun extrait pertinent dans la documentation de référence.)";
+  // Sans extrait pertinent, on n'évoque pas la documentation (sinon l'agent le signale dans sa réponse)
+  const ctxText = ctx.length ? ctx.map((c) => `### [${c.title}]\n${c.text}`).join("\n\n") : "";
   const system = `${config.instructions}\n\nPublic visé : ${AUD[config.audience] || AUD.telephonistes}.\nÉcris en Markdown simple (titres ###, listes, gras). Pas de tableaux.`;
-  const messages = [...history, { role: "user", content: `DOCUMENTATION DE RÉFÉRENCE (extraits)\n\n${ctxText}\n\n---\nQUESTION\n${question}` }];
+  const userContent = ctxText
+    ? `EXTRAITS DES PROCÉDURES DE LA CLINIQUE (à appliquer en priorité)\n\n${ctxText}\n\n---\nQUESTION\n${question}`
+    : question;
+  const messages = [...history, { role: "user", content: userContent }];
   // Modèle : celui choisi dans l'interface s'il est permis par la configuration, sinon celui par défaut
   const allowed = Array.isArray(config.modelesProposes) && config.modelesProposes.length ? config.modelesProposes.filter((t) => MODELS[t]) : Object.keys(MODELS);
   const asked = String(body?.tier || "");
