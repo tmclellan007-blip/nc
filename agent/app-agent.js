@@ -102,6 +102,34 @@
     $("kbInfo").textContent = text;
   }
 
+  /* ---------- réponse en deux parties : En direct + Apprentissage ---------- */
+  const LIVE_RE = /\[\s*EN DIRECT\s*\]/i;
+  const LEARN_RE = /\[\s*APPRENTISSAGE\s*\]/i;
+  const SVG_BOLT = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>';
+  const SVG_BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>';
+  function splitAnswer(text) {
+    const li = text.search(LIVE_RE);
+    if (li === -1) {
+      // le marqueur peut être en train d'arriver : on attend avant d'afficher du texte brut
+      if (/^\s*\[[^\]]*$/.test(text)) return { pending: true };
+      return { plain: text };
+    }
+    const after = text.slice(li).replace(LIVE_RE, "");
+    const lj = after.search(LEARN_RE);
+    if (lj === -1) return { live: after.replace(/\n\s*\[[^\]\n]*$/, "").trim(), learn: null };
+    return { live: after.slice(0, lj).trim(), learn: after.slice(lj).replace(LEARN_RE, "").trim() };
+  }
+  function renderAnswer(body, text, done) {
+    const p = splitAnswer(text);
+    if (p.pending) return;
+    if (p.plain !== undefined) { body.innerHTML = md(p.plain); body.dataset.live = ""; return; }
+    body.dataset.live = p.live;
+    let html = `<section class="box-live"><div class="box-head">${SVG_BOLT}En direct</div><div class="box-body">${md(p.live) || '<span class="typing"><i></i><i></i><i></i></span>'}</div></section>`;
+    if (p.learn !== null) html += `<section class="box-learn"><div class="box-head">${SVG_BOOK}Apprentissage</div><div class="box-body">${md(p.learn) || '<span class="typing"><i></i><i></i><i></i></span>'}</div></section>`;
+    else if (!done) html += `<section class="box-learn waiting"><div class="box-head">${SVG_BOOK}Apprentissage</div><div class="box-body"><span class="typing"><i></i><i></i><i></i></span></div></section>`;
+    body.innerHTML = html;
+  }
+
   /* ---------- markdown ---------- */
   function md(src) {
     const lines = esc(src).split("\n"); const out = []; let list = null;
@@ -176,17 +204,18 @@
         if (done) break;
         const stick = nearBottom();
         answer += dec.decode(value, { stream: true });
-        body.innerHTML = md(answer);
+        renderAnswer(body, answer, false);
         if (stick) toBottom();
       }
+      renderAnswer(body, answer, true);
       if (!answer.trim()) { body.innerHTML = '<p class="err">Aucune réponse reçue. Réessayez.</p>'; return; }
       turns.push({ role: "user", content: q }, { role: "assistant", content: answer });
       finishAnswer(res, col, answer);
     } catch (e) {
       if (e.name === "AbortError") {
-        if (answer) turns.push({ role: "user", content: q }, { role: "assistant", content: answer });
+        if (answer) { renderAnswer(body, answer, true); turns.push({ role: "user", content: q }, { role: "assistant", content: answer }); }
         else body.innerHTML = '<p class="err">Réponse arrêtée.</p>';
-      } else body.innerHTML = (answer ? md(answer) : "") + '<p class="err">La connexion a été interrompue. Vérifiez Internet et réessayez.</p>';
+      } else { if (answer) renderAnswer(body, answer, true); else body.textContent = ""; body.insertAdjacentHTML("beforeend", '<p class="err">La connexion a été interrompue. Vérifiez Internet et réessayez.</p>'); }
     } finally {
       ctl = null; busy(false);
     }
@@ -202,11 +231,13 @@
       col.append(s);
     }
     const acts = document.createElement("div"); acts.className = "actions";
-    const cp = document.createElement("button"); cp.type = "button"; cp.className = "act"; cp.innerHTML = SVG_COPY + "<span>Copier</span>";
+    const cp = document.createElement("button"); cp.type = "button"; cp.className = "act"; const label = () => (col.querySelector(".body")?.dataset.live ? "Copier la réponse en direct" : "Copier");
+    cp.innerHTML = SVG_COPY + "<span></span>"; cp.querySelector("span").textContent = label();
     cp.onclick = async () => {
-      try { await navigator.clipboard.writeText(answer); cp.querySelector("span").textContent = "Copié"; }
+      const live = col.querySelector(".body")?.dataset.live;
+      try { await navigator.clipboard.writeText(live || answer); cp.querySelector("span").textContent = "Copié"; }
       catch { cp.querySelector("span").textContent = "Copie impossible"; }
-      setTimeout(() => { cp.querySelector("span").textContent = "Copier"; }, 2000);
+      setTimeout(() => { cp.querySelector("span").textContent = label(); }, 2000);
     };
     acts.append(cp); col.append(acts);
 
