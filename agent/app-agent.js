@@ -105,25 +105,34 @@
   }
 
   /* ---------- réponse en deux parties : En direct + Apprentissage ---------- */
-  const LIVE_RE = /\[\s*EN DIRECT\s*\]/i;
-  const LEARN_RE = /\[\s*APPRENTISSAGE\s*\]/i;
+  // Marqueurs tolérants : [EN DIRECT], **EN DIRECT**, ### En direct :, 🟩 EN DIRECT…, seuls sur leur ligne
+  const MARK = (w) => new RegExp("^[ \\t>#*_\\[(\\-–—🟩🟪⚡📘]*" + w + "[ \\t\\]*_):—–-]*$", "im");
+  const LIVE_RE = MARK("en\\s+direct");
+  const LEARN_RE = MARK("apprentissage");
   const SVG_BOLT = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>';
   const SVG_PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>';
   const SVG_BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>';
-  function splitAnswer(text) {
-    const li = text.search(LIVE_RE);
-    if (li === -1) {
-      // le marqueur peut être en train d'arriver : on attend avant d'afficher du texte brut
-      if (/^\s*\[[^\]]*$/.test(text)) return { pending: true };
-      return { plain: text };
+  function splitAnswer(text, done) {
+    const m = text.match(LIVE_RE);
+    if (!m) {
+      // un marqueur est peut-être en train d'arriver : on attend un peu avant d'afficher
+      if (!done && text.trim().length < 40 && !/\n/.test(text.trim())) return { pending: true };
+      if (inScenario && !LEARN_RE.test(text)) return { plain: text };
+      // filet de sécurité : 1er paragraphe = En direct, le reste = Apprentissage
+      const lm = text.match(LEARN_RE);
+      if (lm) return { live: text.slice(0, lm.index).trim(), learn: text.slice(lm.index + lm[0].length).trim() };
+      const parts = text.trim().split(/\n\s*\n/);
+      if (parts.length < 2) return done ? { plain: text } : { live: parts[0], learn: null };
+      return { live: parts[0], learn: parts.slice(1).join("\n\n") };
     }
-    const after = text.slice(li).replace(LIVE_RE, "");
-    const lj = after.search(LEARN_RE);
-    if (lj === -1) return { live: after.replace(/\n\s*\[[^\]\n]*$/, "").trim(), learn: null };
-    return { live: after.slice(0, lj).trim(), learn: after.slice(lj).replace(LEARN_RE, "").trim() };
+    const after = text.slice(m.index + m[0].length);
+    const lm = after.match(LEARN_RE);
+    if (!lm) return { live: after.trim(), learn: null };
+    return { live: after.slice(0, lm.index).trim(), learn: after.slice(lm.index + lm[0].length).trim() };
   }
+
   function renderAnswer(body, text, done) {
-    const p = splitAnswer(text);
+    const p = splitAnswer(text, done);
     if (p.pending) return;
     if (p.plain !== undefined) {
       body.dataset.live = "";
