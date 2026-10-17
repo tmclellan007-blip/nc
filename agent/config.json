@@ -1,5 +1,5 @@
 {
-  "apiUrl": "",
+  "apiUrl": "https://laqualia-agent.tmclellan007.workers.dev",
   "name": "Assistant La Qualia",
   "tag": "Le coach de l'équipe d'accueil : clients, équipe clinique et lexique",
   "audience": "telephonistes",
