@@ -67,7 +67,11 @@ async function handlePost(request, env, cors) {
   const ctx = retrieve(chunks, question);
   // Sans extrait pertinent, on n'évoque pas la documentation (sinon l'agent le signale dans sa réponse)
   const ctxText = ctx.length ? ctx.map((c) => `### [${c.title}]\n${c.text}`).join("\n\n") : "";
-  const system = `${config.instructions}\n\nPublic visé : ${AUD[config.audience] || AUD.telephonistes}.\nÉcris en Markdown simple (titres ###, listes, gras). Pas de tableaux.`;
+  const prenom = String(body?.prenom || "").replace(/[^\p{L}\p{M}' -]/gu, "").replace(/\s+/g, " ").trim().slice(0, 30);
+  const who = prenom
+    ? `\nTu parles à ${prenom}, membre de l'équipe d'accueil. Utilise son prénom de façon naturelle et chaleureuse : au début de la partie [APPRENTISSAGE] et, au besoin, pour l'encourager en mise en situation. Ne mets pas son prénom dans [EN DIRECT] et ne le répète pas à chaque phrase.`
+    : "";
+  const system = `${config.instructions}\n\nPublic visé : ${AUD[config.audience] || AUD.telephonistes}.${who}\nÉcris en Markdown simple (titres ###, listes, gras). Pas de tableaux.`;
   const userContent = ctxText
     ? `EXTRAITS DES PROCÉDURES DE LA CLINIQUE (à appliquer en priorité)\n\n${ctxText}\n\n---\nQUESTION\n${question}`
     : question;
