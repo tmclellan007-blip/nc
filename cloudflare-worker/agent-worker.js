@@ -1,10 +1,14 @@
-// Relais sécurisé de l'Assistant La Qualia (Cloudflare Pages Function).
-// La clé API Anthropic reste côté serveur : elle est lue dans la variable
-// d'environnement ANTHROPIC_API_KEY et n'est jamais envoyée au navigateur.
+// Relais sécurisé de l'Assistant La Qualia — Cloudflare Worker.
+// Le site (GitHub Pages) est statique : ce Worker garde la clé API Anthropic
+// côté serveur et n'accepte que les requêtes venant des adresses autorisées.
 //
-// Variables d'environnement (Cloudflare > Pages > nc > Settings > Variables and Secrets) :
-//   ANTHROPIC_API_KEY  (obligatoire, de type « Secret »)
-//   AGENT_CODE         (recommandé) code d'accès que l'équipe saisit une fois
+// À coller dans Cloudflare > Workers & Pages > Create > Worker (voir LISEZMOI.md).
+// Variables du Worker (Settings > Variables and Secrets) :
+//   ANTHROPIC_API_KEY  (obligatoire, type « Secret »)
+//   AGENT_CODE         (recommandé, type « Secret ») code d'accès de l'équipe
+//   SITE_URL           adresse du site, ex. https://tmclellan007-blip.github.io/nc
+//   ALLOWED_ORIGINS    origines autorisées séparées par des virgules,
+//                      ex. https://tmclellan007-blip.github.io,https://www.laqualia.com
 //   AGENT_MODEL        (facultatif) remplace le modèle choisi dans agent/config.json
 
 const MODELS = { quick: "claude-haiku-5-5", default: "claude-sonnet-5-5", complex: "claude-opus-5-5" };
@@ -22,21 +26,41 @@ const MAX_TOKENS = 1600;
 
 let cache = null; // { at, config, chunks }
 
-export async function onRequestGet({ env }) {
-  return json(200, { ready: !!env.ANTHROPIC_API_KEY, needsCode: !!env.AGENT_CODE });
+export default {
+  async fetch(request, env) {
+    const cors = corsHeaders(request, env);
+    if (request.method === "OPTIONS") return new Response(null, { status: cors ? 204 : 403, headers: cors || {} });
+    if (!cors) return json(403, { error: "Origine non autorisée." }, {});
+    if (request.method === "GET") return json(200, { ready: !!env.ANTHROPIC_API_KEY, needsCode: !!env.AGENT_CODE }, cors);
+    if (request.method === "POST") return handlePost(request, env, cors);
+    return json(405, { error: "Méthode non permise." }, cors);
+  },
+};
+
+function corsHeaders(request, env) {
+  const origin = request.headers.get("origin") || "";
+  const allowed = String(env.ALLOWED_ORIGINS || "").split(",").map((s) => s.trim().replace(/\/$/, "")).filter(Boolean);
+  if (!origin || !allowed.includes(origin)) return null;
+  return {
+    "access-control-allow-origin": origin,
+    "access-control-allow-methods": "GET, POST, OPTIONS",
+    "access-control-allow-headers": "content-type, x-agent-code",
+    "access-control-expose-headers": "x-agent-sources",
+    "access-control-max-age": "86400",
+    vary: "origin",
+  };
 }
 
-export async function onRequestPost({ request, env }) {
-  if (!sameOrigin(request)) return json(403, { error: "Requête refusée." });
-  if (!env.ANTHROPIC_API_KEY) return json(503, { error: "L'assistant n'est pas encore configuré : la clé API est manquante." });
+async function handlePost(request, env, cors) {
+  if (!env.ANTHROPIC_API_KEY) return json(503, { error: "L'assistant n'est pas encore configuré : la clé API est manquante." }, cors);
   if (env.AGENT_CODE && request.headers.get("x-agent-code") !== env.AGENT_CODE) {
-    return json(401, { error: "Code d'accès invalide." });
+    return json(401, { error: "Code d'accès invalide." }, cors);
   }
 
   let body;
-  try { body = await request.json(); } catch { return json(400, { error: "Requête invalide." }); }
+  try { body = await request.json(); } catch { return json(400, { error: "Requête invalide." }, cors); }
   const question = String(body?.question || "").trim().slice(0, MAX_QUESTION);
-  if (!question) return json(400, { error: "La question est vide." });
+  if (!question) return json(400, { error: "La question est vide." }, cors);
   const history = cleanHistory(body?.history);
 
   const { config, chunks } = await loadKnowledge(request, env);
@@ -64,12 +88,13 @@ export async function onRequestPost({ request, env }) {
       : status === 429 ? "Trop de questions en même temps. Réessayez dans une minute."
       : status === 400 ? "La demande a été refusée par le service. Raccourcissez la question ou commencez une nouvelle conversation."
       : "Le service est momentanément indisponible. Réessayez.";
-    return json(status === 401 ? 502 : status, { error: msg });
+    return json(status === 401 ? 502 : status, { error: msg }, cors);
   }
 
   const sources = [...new Set(ctx.map((c) => c.title))];
   return new Response(sseToText(upstream.body), {
     headers: {
+      ...cors,
       "content-type": "text/plain; charset=utf-8",
       "cache-control": "no-store",
       "x-agent-sources": encodeURIComponent(JSON.stringify(sources)),
@@ -78,14 +103,8 @@ export async function onRequestPost({ request, env }) {
 }
 
 /* ---------- helpers ---------- */
-function json(status, data) {
-  return new Response(JSON.stringify(data), { status, headers: { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
-}
-
-function sameOrigin(request) {
-  const origin = request.headers.get("origin");
-  if (!origin) return true; // certains navigateurs n'envoient pas Origin en same-origin
-  try { return new URL(origin).host === new URL(request.url).host; } catch { return false; }
+function json(status, data, cors) {
+  return new Response(JSON.stringify(data), { status, headers: { ...cors, "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
 }
 
 function cleanHistory(h) {
@@ -123,7 +142,8 @@ function sseToText(stream) {
 }
 
 async function asset(request, env, path) {
-  const res = await env.ASSETS.fetch(new URL(path, request.url));
+  const base = String(env.SITE_URL || "").replace(/\/$/, "");
+  const res = await fetch(base + path, { cf: { cacheTtl: 120 } });
   if (!res.ok) throw new Error(path);
   return res;
 }

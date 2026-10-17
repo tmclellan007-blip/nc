@@ -15,13 +15,13 @@ Les documents de ce dossier servent de base de connaissances à l'agent des tél
 ]
 ```
 
-4. Enregistrez (commit) sur GitHub. Cloudflare redéploie le site en une à deux minutes, et l'agent utilise le nouveau document dans les 5 minutes qui suivent.
+4. Enregistrez (commit) sur GitHub. GitHub Pages republie le site en une à deux minutes, et l'agent utilise le nouveau document dans les 5 minutes qui suivent.
 
 Le nom de fichier ne doit contenir ni barre oblique ni espace ; utilisez des tirets.
 
 ## Important : ce dépôt est public
 
-Tout fichier placé ici est lisible par n'importe qui sur GitHub et à l'adresse `laqualia.com/agent/docs/…`. N'y mettez pas de renseignements personnels sur des clients ou des employés, ni d'information confidentielle.
+Tout fichier placé ici est lisible par n'importe qui sur GitHub et en ligne dans le dossier `agent/docs/` du site. N'y mettez pas de renseignements personnels sur des clients ou des employés, ni d'information confidentielle.
 
 ## Modifier le comportement de l'agent
 

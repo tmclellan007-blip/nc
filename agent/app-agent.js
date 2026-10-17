@@ -100,7 +100,8 @@
     $("send").hidden = true; $("stop").hidden = false;
     let text = "";
     try {
-      const res = await fetch("/api/agent", {
+      if (!cfg.apiUrl) { body.innerHTML = '<p class="lqa-err">L\'assistant n\'est pas encore activé : l\'adresse du relais (apiUrl) reste à ajouter dans agent/config.json.</p>'; return; }
+      const res = await fetch(cfg.apiUrl, {
         method: "POST",
         headers: { "content-type": "application/json", "x-agent-code": code },
         body: JSON.stringify({ question: q, history: turns.slice(-8) }),
@@ -177,10 +178,17 @@
   };
 
   /* ---------- boot ---------- */
-  fetch("config.json", { cache: "no-cache" }).then((r) => r.json()).then((c) => { cfg = { ...cfg, ...c }; applyCfg(); }).catch(applyCfg);
-  fetch("/api/agent").then((r) => r.ok ? r.json() : null).then((s) => {
-    if (!s) return;
-    if (!s.ready) $("kbInfo").textContent = "L'assistant n'est pas encore activé : la clé API reste à ajouter dans Cloudflare.";
-    else if (s.needsCode && !code) askCode(false);
-  }).catch(() => {});
+  fetch("config.json", { cache: "no-cache" })
+    .then((r) => r.json())
+    .then((c) => { cfg = { ...cfg, ...c }; })
+    .catch(() => {})
+    .then(() => {
+      applyCfg();
+      if (!cfg.apiUrl) { $("kbInfo").textContent = "Assistant pas encore activé : le relais Cloudflare reste à brancher."; return; }
+      return fetch(cfg.apiUrl).then((r) => r.ok ? r.json() : null).then((s) => {
+        if (!s) { $("kbInfo").textContent = "Le relais ne répond pas encore. Vérifiez ALLOWED_ORIGINS dans Cloudflare."; return; }
+        if (!s.ready) $("kbInfo").textContent = "Assistant pas encore activé : la clé API reste à ajouter dans Cloudflare.";
+        else if (s.needsCode && !code) askCode(false);
+      }).catch(() => { $("kbInfo").textContent = "Le relais ne répond pas encore. Vérifiez son adresse dans agent/config.json."; });
+    });
 })();
