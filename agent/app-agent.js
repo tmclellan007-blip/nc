@@ -112,24 +112,53 @@
   const SVG_BOLT = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>';
   const SVG_PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>';
   const SVG_BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>';
+  // Phrases qui parlent de la documentation ou renvoient au responsable « par défaut » : jamais dans le vert
+  const DOC_RE = /(consigne|procédure|politique|information|document|documentation|directive)s?\s+(interne|de la clinique|fourni|disponible|trouvée|indiquée)|aucune?\s+(consigne|procédure|information|politique|directive)|documentation (fournie|de référence)|conseils? généraux|en cas de doute/i;
+  const isHeadingOnly = (p) => /^\s*(#{1,4}\s+.*|\*\*[^*]+\*\*\s*:?)\s*$/.test(p.trim());
+  function cleanLive(live, learn) {
+    const notes = [];
+    const kept = [];
+    for (const para of live.split(/\n\s*\n/)) {
+      const lines = para.split("\n").filter((l) => !/^\s*#{1,4}\s+/.test(l));
+      const txt = lines.join("\n").trim();
+      if (!txt) continue;
+      const sentences = txt.split(/(?<=[.!?…»])\s+/);
+      const ok = sentences.filter((x) => !DOC_RE.test(x));
+      sentences.filter((x) => DOC_RE.test(x)).forEach((x) => notes.push(x.trim()));
+      if (ok.join(" ").trim()) kept.push(ok.join(" ").trim());
+    }
+    let out = kept.join("\n\n");
+    let l = learn;
+    if (notes.length && l !== null) l = (l ? l + "\n\n" : "") + "_Note : " + notes.join(" ") + "_";
+    return { live: out, learn: l };
+  }
   function splitAnswer(text, done) {
     const m = text.match(LIVE_RE);
+    let r;
     if (!m) {
       // un marqueur est peut-être en train d'arriver : on attend un peu avant d'afficher
       if (!done && text.trim().length < 40 && !/\n/.test(text.trim())) return { pending: true };
       if (inScenario && !LEARN_RE.test(text)) return { plain: text };
-      // filet de sécurité : 1er paragraphe = En direct, le reste = Apprentissage
       const lm = text.match(LEARN_RE);
-      if (lm) return { live: text.slice(0, lm.index).trim(), learn: text.slice(lm.index + lm[0].length).trim() };
-      const parts = text.trim().split(/\n\s*\n/);
-      if (parts.length < 2) return done ? { plain: text } : { live: parts[0], learn: null };
-      return { live: parts[0], learn: parts.slice(1).join("\n\n") };
+      if (lm) r = { live: text.slice(0, lm.index).trim(), learn: text.slice(lm.index + lm[0].length).trim() };
+      else {
+        // filet de sécurité : 1er vrai paragraphe (ni titre, ni mention de la documentation) = En direct
+        const parts = text.trim().split(/\n\s*\n/);
+        const skipped = [];
+        while (parts.length > 1 && (isHeadingOnly(parts[0]) || DOC_RE.test(parts[0]))) skipped.push(parts.shift());
+        if (parts.length < 2 && done) return { plain: text };
+        r = { live: parts[0] || "", learn: parts.length > 1 ? parts.slice(1).join("\n\n") : (done ? "" : null) };
+        const docNotes = skipped.filter((x) => DOC_RE.test(x)).map((x) => x.replace(/^\s*#{1,4}.*\n?/gm, "").trim()).filter(Boolean);
+        if (docNotes.length && r.learn !== null) r.learn = (r.learn ? r.learn + "\n\n" : "") + "_Note : " + docNotes.join(" ") + "_";
+      }
+    } else {
+      const after = text.slice(m.index + m[0].length);
+      const lm = after.match(LEARN_RE);
+      r = lm ? { live: after.slice(0, lm.index).trim(), learn: after.slice(lm.index + lm[0].length).trim() } : { live: after.trim(), learn: null };
     }
-    const after = text.slice(m.index + m[0].length);
-    const lm = after.match(LEARN_RE);
-    if (!lm) return { live: after.trim(), learn: null };
-    return { live: after.slice(0, lm.index).trim(), learn: after.slice(lm.index + lm[0].length).trim() };
+    return cleanLive(r.live, r.learn);
   }
+
 
   function renderAnswer(body, text, done) {
     const p = splitAnswer(text, done);
@@ -143,7 +172,7 @@
     }
     body.dataset.live = p.live;
     let html = `<section class="box-live"><div class="box-head">${SVG_BOLT}En direct</div><div class="box-body">${md(p.live) || '<span class="typing"><i></i><i></i><i></i></span>'}</div></section>`;
-    if (p.learn !== null) html += `<section class="box-learn"><div class="box-head">${SVG_BOOK}Apprentissage</div><div class="box-body">${md(p.learn) || '<span class="typing"><i></i><i></i><i></i></span>'}</div></section>`;
+    if (p.learn !== null && (p.learn || !done)) html += `<section class="box-learn"><div class="box-head">${SVG_BOOK}Apprentissage</div><div class="box-body">${md(p.learn) || '<span class="typing"><i></i><i></i><i></i></span>'}</div></section>`;
     else if (!done) html += `<section class="box-learn waiting"><div class="box-head">${SVG_BOOK}Apprentissage</div><div class="box-body"><span class="typing"><i></i><i></i><i></i></span></div></section>`;
     body.innerHTML = html;
   }
