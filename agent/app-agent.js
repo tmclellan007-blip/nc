@@ -50,7 +50,7 @@
     el.textContent = "";
     list.forEach((t) => {
       const b = document.createElement("button");
-      b.className = "chip"; b.type = "button"; b.textContent = t;
+      b.className = "lqa-chip"; b.type = "button"; b.textContent = t;
       b.onclick = () => { $("q").value = t; ask(); };
       el.append(b);
     });
@@ -81,10 +81,10 @@
   /* ---------- chat ---------- */
   function addMsg(kind, text) {
     $("empty").hidden = true;
-    const m = document.createElement("div"); m.className = "msg " + kind;
-    const who = document.createElement("div"); who.className = "who"; who.textContent = kind === "q" ? "Vous" : (cfg.name || "Assistant");
-    const body = document.createElement("div"); body.className = "body";
-    if (kind === "q") body.textContent = text; else body.innerHTML = '<span class="thinking">Consultation de la documentation…</span>';
+    const m = document.createElement("div"); m.className = "lqa-msg lqa-" + kind;
+    const who = document.createElement("div"); who.className = "lqa-who"; who.textContent = kind === "q" ? "Vous" : (cfg.name || "Assistant");
+    const body = document.createElement("div"); body.className = "lqa-body";
+    if (kind === "q") body.textContent = text; else body.innerHTML = '<span class="lqa-thinking">Consultation de la documentation…</span>';
     m.append(who, body); $("thread").append(m);
     m.scrollIntoView({ block: "end", behavior: "smooth" });
     return m;
@@ -95,7 +95,7 @@
     if (!q || ctl) return;
     $("q").value = ""; autosize();
     addMsg("q", q);
-    const m = addMsg("a"); const body = m.querySelector(".body");
+    const m = addMsg("a"); const body = m.querySelector(".lqa-body");
     ctl = new AbortController();
     $("send").hidden = true; $("stop").hidden = false;
     let text = "";
@@ -109,8 +109,8 @@
       if (!res.ok) {
         let msg = "La réponse a échoué. Réessayez.";
         try { msg = (await res.json()).error || msg; } catch {}
-        if (res.status === 401) { m.previousElementSibling?.remove(); m.remove(); if (!$("thread").querySelector(".msg")) $("empty").hidden = false; $("q").value = q; askCode(true); return; }
-        body.innerHTML = `<p class="err">${esc(msg)}</p>`;
+        if (res.status === 401) { m.previousElementSibling?.remove(); m.remove(); if (!$("thread").querySelector(".lqa-msg")) $("empty").hidden = false; $("q").value = q; askCode(true); return; }
+        body.innerHTML = `<p class="lqa-err">${esc(msg)}</p>`;
         return;
       }
       const reader = res.body.getReader(); const dec = new TextDecoder();
@@ -120,25 +120,25 @@
         text += dec.decode(value, { stream: true });
         body.innerHTML = md(text);
       }
-      if (!text.trim()) { body.innerHTML = '<p class="err">Aucune réponse reçue. Réessayez.</p>'; return; }
+      if (!text.trim()) { body.innerHTML = '<p class="lqa-err">Aucune réponse reçue. Réessayez.</p>'; return; }
       turns.push({ role: "user", content: q }, { role: "assistant", content: text });
       let sources = [];
       try { sources = JSON.parse(decodeURIComponent(res.headers.get("x-agent-sources") || "[]")); } catch {}
       const cited = sources.filter((t) => text.includes(t));
       if (cited.length) {
-        const s = document.createElement("div"); s.className = "srcs"; s.textContent = "Sources : ";
-        cited.forEach((t) => { const c = document.createElement("span"); c.className = "src"; c.textContent = t; s.append(c); });
+        const s = document.createElement("div"); s.className = "lqa-srcs"; s.textContent = "Sources : ";
+        cited.forEach((t) => { const c = document.createElement("span"); c.className = "lqa-src"; c.textContent = t; s.append(c); });
         m.append(s);
       }
-      document.querySelectorAll(".next").forEach((n) => n.remove());
-      const nx = document.createElement("div"); nx.className = "next";
-      const lab = document.createElement("div"); lab.className = "who"; lab.textContent = "Pour continuer à vous former";
-      const ch = document.createElement("div"); ch.className = "chips"; fillChips(ch, pickExamples(3));
-      const tb = document.createElement("button"); tb.className = "chip train"; tb.type = "button"; tb.textContent = "Nouvelle mise en situation"; tb.onclick = startScenario; ch.append(tb);
+      document.querySelectorAll(".lqa-next").forEach((n) => n.remove());
+      const nx = document.createElement("div"); nx.className = "lqa-next";
+      const lab = document.createElement("div"); lab.className = "lqa-who"; lab.textContent = "Pour continuer à vous former";
+      const ch = document.createElement("div"); ch.className = "lqa-chips"; fillChips(ch, pickExamples(3));
+      const tb = document.createElement("button"); tb.className = "lqa-chip lqa-train"; tb.type = "button"; tb.textContent = "Nouvelle mise en situation"; tb.onclick = startScenario; ch.append(tb);
       nx.append(lab, ch); m.after(nx);
     } catch (e) {
       if (e.name === "AbortError") { if (text) turns.push({ role: "user", content: q }, { role: "assistant", content: text }); if (!text) body.textContent = "Réponse arrêtée."; }
-      else body.innerHTML = (text ? md(text) : "") + '<p class="err">La connexion a été interrompue. Vérifiez Internet et réessayez.</p>';
+      else body.innerHTML = (text ? md(text) : "") + '<p class="lqa-err">La connexion a été interrompue. Vérifiez Internet et réessayez.</p>';
     } finally {
       ctl = null; $("send").hidden = false; $("stop").hidden = true;
       m.scrollIntoView({ block: "end" });
@@ -171,7 +171,7 @@
   $("shuffleBtn").onclick = () => fillChips($("examples"), pickExamples(4));
   $("clear").onclick = () => {
     ctl?.abort(); turns = [];
-    [...$("thread").querySelectorAll(".msg,.next")].forEach((n) => n.remove());
+    [...$("thread").querySelectorAll(".lqa-msg,.lqa-next")].forEach((n) => n.remove());
     fillChips($("examples"), pickExamples(4));
     $("empty").hidden = false;
   };
