@@ -30,6 +30,7 @@
 
   let cfg = { name: "Assistant La Qualia", examples: [] };
   let turns = [];
+  let inScenario = false;
   let ctl = null;
   let code = store.get("lq-agent-code") || "";
   let shown = new Set();
@@ -83,6 +84,7 @@
   }
   function startScenario() {
     closeMenu();
+    inScenario = true;
     const sc = SCENARIOS[Math.floor(Math.random() * SCENARIOS.length)];
     send(`Mets-moi en situation : je suis à la réception et je reçois un appel de ${sc}.`);
   }
@@ -106,6 +108,7 @@
   const LIVE_RE = /\[\s*EN DIRECT\s*\]/i;
   const LEARN_RE = /\[\s*APPRENTISSAGE\s*\]/i;
   const SVG_BOLT = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg>';
+  const SVG_PHONE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>';
   const SVG_BOOK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5z"/><path d="M4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>';
   function splitAnswer(text) {
     const li = text.search(LIVE_RE);
@@ -122,7 +125,13 @@
   function renderAnswer(body, text, done) {
     const p = splitAnswer(text);
     if (p.pending) return;
-    if (p.plain !== undefined) { body.innerHTML = md(p.plain); body.dataset.live = ""; return; }
+    if (p.plain !== undefined) {
+      body.dataset.live = "";
+      body.innerHTML = inScenario
+        ? `<section class="box-learn box-scene"><div class="box-head">${SVG_PHONE}Mise en situation</div><div class="box-body">${md(p.plain)}</div></section>`
+        : md(p.plain);
+      return;
+    }
     body.dataset.live = p.live;
     let html = `<section class="box-live"><div class="box-head">${SVG_BOLT}En direct</div><div class="box-body">${md(p.live) || '<span class="typing"><i></i><i></i><i></i></span>'}</div></section>`;
     if (p.learn !== null) html += `<section class="box-learn"><div class="box-head">${SVG_BOOK}Apprentissage</div><div class="box-body">${md(p.learn) || '<span class="typing"><i></i><i></i><i></i></span>'}</div></section>`;
@@ -256,7 +265,7 @@
   function updateSend() { $("send").disabled = !$("q").value.trim(); }
 
   function resetConversation() {
-    ctl?.abort(); turns = [];
+    ctl?.abort(); turns = []; inScenario = false;
     $("thread").textContent = "";
     $("empty").hidden = false;
     renderWelcomeCards(); renderSideList();
