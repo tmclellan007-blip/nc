@@ -45,7 +45,7 @@ function corsHeaders(request, env) {
     "access-control-allow-origin": origin,
     "access-control-allow-methods": "GET, POST, OPTIONS",
     "access-control-allow-headers": "content-type, x-agent-code",
-    "access-control-expose-headers": "x-agent-sources",
+    "access-control-expose-headers": "x-agent-sources, x-agent-model",
     "access-control-max-age": "86400",
     vary: "origin",
   };
@@ -70,7 +70,11 @@ async function handlePost(request, env, cors) {
     : "(Aucun extrait pertinent dans la documentation de référence.)";
   const system = `${config.instructions}\n\nPublic visé : ${AUD[config.audience] || AUD.telephonistes}.\nÉcris en Markdown simple (titres ###, listes, gras). Pas de tableaux.`;
   const messages = [...history, { role: "user", content: `DOCUMENTATION DE RÉFÉRENCE (extraits)\n\n${ctxText}\n\n---\nQUESTION\n${question}` }];
-  const model = env.AGENT_MODEL || MODELS[config.tier] || MODELS.default;
+  // Modèle : celui choisi dans l'interface s'il est permis par la configuration, sinon celui par défaut
+  const allowed = Array.isArray(config.modelesProposes) && config.modelesProposes.length ? config.modelesProposes.filter((t) => MODELS[t]) : Object.keys(MODELS);
+  const asked = String(body?.tier || "");
+  const tier = allowed.includes(asked) ? asked : (MODELS[config.tier] ? config.tier : "default");
+  const model = env.AGENT_MODEL || MODELS[tier];
 
   const upstream = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -98,6 +102,7 @@ async function handlePost(request, env, cors) {
       "content-type": "text/plain; charset=utf-8",
       "cache-control": "no-store",
       "x-agent-sources": encodeURIComponent(JSON.stringify(sources)),
+      "x-agent-model": model,
     },
   });
 }
