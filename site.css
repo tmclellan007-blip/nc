@@ -90,6 +90,21 @@ html{scrollbar-color:#c9bfdd var(--bg)}
 .menu-toggle[aria-expanded=true] span[aria-hidden]{border-color:transparent}
 .menu-toggle[aria-expanded=true] span[aria-hidden]::after{top:2px;transform:rotate(45deg);box-shadow:none}
 .menu-toggle[aria-expanded=true] span[aria-hidden]::before{content:"";position:absolute;left:0;right:0;top:2px;height:2px;background:currentColor;transform:rotate(-45deg)}
+@media(min-width:901px){.header nav>a,.header nav>a.button.small{white-space:nowrap}}
+@media(min-width:901px) and (max-width:1180px){
+  .nav-wrap{gap:14px!important}
+  .header .brand svg{width:150px!important}
+  .header nav{gap:2px!important}
+  .header nav>a:not(.button){font-size:14px;padding:8px 10px}
+  .header nav>a.button.small{margin-left:6px;font-size:14px!important;padding:10px 14px 10px 16px!important;gap:8px!important}
+  .lang-switch .ls-cur,.lang-switch a{padding:6px 9px!important}
+}
+@media(min-width:901px) and (max-width:1000px){
+  .nav-wrap{width:calc(100% - 40px)!important;gap:10px!important}
+  .header .brand svg{width:132px!important}
+  .header nav>a:not(.button){font-size:13.5px;padding:8px 8px}
+  .header nav>a.button.small{font-size:13.5px!important;padding:10px 12px 10px 14px!important}
+}
 @media(max-width:900px){
   .nav-wrap{min-height:68px}
   .header nav{top:calc(100% + 1px)!important;margin:0 12px;left:0;right:0;border-radius:24px;background:#fff!important;border:1px solid var(--line)!important;box-shadow:var(--sh-3)!important;padding:12px!important;gap:4px!important}
@@ -231,7 +246,8 @@ html{scrollbar-color:#c9bfdd var(--bg)}
 .faq-list details>p{padding:0 26px;color:var(--ink-2)!important}
 .faq-list details>p:last-child{padding-bottom:6px}
 
-@media(min-width:901px){.faq-layout>.section-title{position:sticky;top:120px;align-self:start}}
+@media(min-width:1001px){.faq-layout>.section-title{position:sticky;top:120px;align-self:start}}
+@media(max-width:1000px){.faq-layout{grid-template-columns:1fr!important;gap:28px!important}.faq-list summary{max-width:none}}
 
 /* ---------- Contact : panneau violet de marque ---------- */
 .contact-section{background:var(--brand) linear-gradient(160deg,#4b16b0 0,var(--brand) 45%,#36108a 100%)!important;color:#fff!important;margin:0 clamp(8px,1.2vw,20px);border-radius:var(--r-xl);padding:clamp(56px,6.5vw,104px) 0!important}
@@ -259,7 +275,8 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 4px rgb
 /* ---------- Amélie Brunelle ---------- */
 .founder-section{padding-block:clamp(72px,8vw,128px)!important}
 .founder-photo-wrap>img{border-radius:var(--r-lg)!important;box-shadow:var(--sh-3)!important}
-.founder-photo-accent{background:var(--brand-soft)!important;border-radius:var(--r-lg)!important}
+.founder-photo-accent{display:none!important}
+.founder-photo-wrap{padding:0!important}
 .founder-heading>p:last-child{color:var(--brand)!important;font-weight:700}
 .founder-card{border:1px solid var(--line)!important;border-left-width:1px!important;border-radius:var(--r-md)!important;box-shadow:var(--sh-1);padding:26px 28px!important;transition:box-shadow .3s var(--ease),transform .3s var(--ease)}
 .founder-card:hover{box-shadow:var(--sh-2)}
@@ -277,6 +294,7 @@ form [aria-invalid=true]{border-color:#c62d1a!important;box-shadow:0 0 0 4px rgb
 .footer-bleed .footer a:hover,.footer-bleed .footer .footer-link:hover,.footer-bleed .contact-reveal:hover{color:#fff!important}
 
 /* ---------- Fenêtres et préférences de cookies ---------- */
+dialog h2{font-family:var(--display);font-weight:400!important;letter-spacing:-.02em!important;color:var(--ink)}
 dialog{background:#fff!important;border-radius:var(--r-lg)!important;box-shadow:0 40px 100px -30px rgba(26,18,54,.5)!important}
 dialog::backdrop{background:rgba(26,18,54,.5)!important}
 .close-dialog{border-radius:50%;background:var(--mist)!important;width:40px!important;height:40px!important;font-size:24px!important;line-height:1;color:var(--ink)}
@@ -293,6 +311,12 @@ dialog::backdrop{background:rgba(26,18,54,.5)!important}
 .header nav>a{border-bottom:0!important}
 .hx-card:hover strong,.hx-card:focus-visible strong{color:var(--ink)!important}
 .lq-cookie-required{font-size:12px!important;border-radius:var(--pill)!important;background:var(--mist)!important;color:var(--ink-2);padding:5px 10px!important}
+
+#lq-cookie-dialog input[type=checkbox]{-webkit-appearance:none;appearance:none;flex:none;width:46px!important;height:28px;min-width:46px;margin:0!important;padding:0!important;border:0!important;border-radius:var(--pill)!important;background:#d9d3e6!important;position:relative;cursor:pointer;box-shadow:none!important;transition:background-color .25s var(--ease)}
+#lq-cookie-dialog input[type=checkbox]::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(28,22,49,.3);transition:transform .25s var(--ease)}
+#lq-cookie-dialog input[type=checkbox]:checked{background:var(--brand)!important}
+#lq-cookie-dialog input[type=checkbox]:checked::after{transform:translateX(18px)}
+#lq-cookie-dialog input[type=checkbox]:focus-visible{outline:2px solid var(--brand);outline-offset:3px}
 
 /* ---------- Mouvement : une seule entrée douce, au chargement du titre ---------- */
 @media(prefers-reduced-motion:no-preference){
