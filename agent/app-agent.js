@@ -1471,6 +1471,12 @@
     ["Consignes au client", "un client appelle après le congé de son animal pour comprendre des consignes déjà validées par le vétérinaire ; tu joues le client"],
     ["Client inquiet post-op", "un client signale des signes après une chirurgie, dont certains peuvent exiger le vétérinaire ; tu joues le client"],
     ["Urgence en hospitalisation", "un collègue signale qu'un patient hospitalisé fictif se dégrade rapidement ; tu joues le collègue"],
+    ["Calcul de dose", "le vétérinaire demande de préparer une dose ou une perfusion pour un patient fictif et vérifie le calcul ; tu joues le vétérinaire"],
+    ["Admission d'un patient", "arrivée d'un patient fictif : triage, signes vitaux et informations à recueillir ; tu joues le client qui amène l'animal"],
+    ["Réveil anesthésique", "surveillance d'un patient fictif au réveil d'une anesthésie, avec des paramètres à interpréter ; tu joues le vétérinaire"],
+    ["Gestion de la douleur", "évaluation de la douleur d'un patient hospitalisé fictif et ajustement à proposer au vétérinaire ; tu joues le vétérinaire"],
+    ["Collègue en formation", "un nouveau collègue demande comment réaliser une tâche technique ; tu joues le collègue"],
+    ["Client en salle d'attente", "client inquiet ou impatient pendant que son animal est en soins ; tu joues le client"],
   ];
   const simTypes = () => (RP().simTypes?.length ? RP().simTypes : isTsa() ? SIM_TYPES_TSA : SIM_TYPES);
   const themesKey = () => (isTsa() ? "lq-themes-tsa" : "lq-themes");
@@ -1482,6 +1488,12 @@
     ["Client inquiet", "propriétaire inquiet pour un symptôme léger à modéré de son animal"],
     ["Deuil", "fin de vie, euthanasie à planifier ou décès récent d'un animal"],
     ["Urgence potentielle", "symptômes qui cachent une vraie urgence, que le client minimise au début"],
+    ["Nouveau client", "première visite d'un nouvel animal : ouverture du dossier, documents et carnet de vaccins à apporter, déroulement du premier rendez-vous"],
+    ["Résultats d'analyse", "client qui appelle pour connaître des résultats d'analyse ; la réception ne les interprète pas et organise le retour d'appel du vétérinaire"],
+    ["Renouvellement", "demande de renouvellement d'un médicament ou d'une nourriture thérapeutique ; dépend de la validation du vétérinaire et de la date du dernier examen"],
+    ["Préparation à une chirurgie", "questions la veille ou le matin d'une chirurgie : jeûne, heure d'arrivée, médicaments habituels, récupération de l'animal"],
+    ["Conseil par téléphone", "client qui veut un diagnostic ou un traitement au téléphone ; la réception ne donne pas d'avis médical et propose la bonne suite"],
+    ["Animal trouvé", "personne qui a trouvé un animal errant ou blessé et ne sait pas quoi faire ; urgence possible, propriétaire inconnu"],
   ];
   const ICON_PERSON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7z"/></svg>';
   const sim = { on: false, active: false, ended: false, turns: [], log: [], type: null, ctl: null, timer: null, start: 0, ringing: false, ringTimeout: null };
