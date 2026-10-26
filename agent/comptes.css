@@ -86,7 +86,11 @@ dialog::backdrop{background:rgba(26,18,54,.45)!important;-webkit-backdrop-filter
 .admin span{color:var(--ink-2)!important}
 .fine{color:var(--ink-3)!important}
 
-/* ---------- Administration : onglets d'origine conservés ---------- */
+/* ---------- Administration : onglets d'origine, barre plus foncée ---------- */
+.tabs{background:#01030b!important}
+.tabs .tab:not([aria-selected="true"]){background:#ffffff1c!important;color:#ffffffd9!important}
+.tabs .tab:not([aria-selected="true"]):hover{background:#ffffff2b!important;color:#fff!important}
+.tabs .tab:not([aria-selected="true"]) .ti{background:#ffffff26!important}
 .toc a{color:var(--ink-2)!important;border-radius:12px!important}
 .toc a:hover{background:var(--mist)!important;color:var(--ink)!important}
 .toc .rb{border-radius:var(--pill)!important}
