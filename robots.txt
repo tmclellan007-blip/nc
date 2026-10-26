@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
-Disallow: /agent/
 
-Sitemap: https://www.laqualia.com/sitemap.xml
+Sitemap: https://laqualia.com/sitemap.xml

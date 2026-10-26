@@ -10,7 +10,7 @@ let dialogTrigger=null;
 function openDialog(dialog,trigger){document.querySelectorAll('dialog[open]').forEach(d=>d.close());dialogTrigger=trigger;dialog.showModal();closeMenu();}
 document.querySelectorAll('[data-contact]').forEach(link=>link.addEventListener('click',()=>{document.querySelectorAll('dialog[open]').forEach(d=>d.close());closeMenu();}));
 document.querySelectorAll('[data-privacy]').forEach(button=>button.addEventListener('click',event=>openDialog(document.getElementById('privacy-dialog'),event.currentTarget)));
-document.querySelectorAll('dialog:not(#lq-cookie-dialog)').forEach(dialog=>{dialog.querySelector('.close-dialog').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close()}});dialog.addEventListener('close',()=>{if(!document.querySelector('dialog[open]')&&dialogTrigger?.isConnected)dialogTrigger.focus()})});
+document.querySelectorAll('dialog:not(#lq-cookie-dialog):not(.lev-lb)').forEach(dialog=>{dialog.querySelector('.close-dialog').addEventListener('click',()=>dialog.close());dialog.addEventListener('click',event=>{if(event.target===dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left||event.clientX>rect.right||event.clientY<rect.top||event.clientY>rect.bottom)dialog.close()}});dialog.addEventListener('close',()=>{if(!document.querySelector('dialog[open]')&&dialogTrigger?.isConnected)dialogTrigger.focus()})});
 const isEN=document.documentElement.lang.startsWith('en');
 document.querySelectorAll('[data-lang-switch]').forEach(a=>{const base=a.getAttribute('href');const sync=()=>{a.setAttribute('href',base+location.hash)};a.addEventListener('click',sync);a.addEventListener('focus',sync);a.addEventListener('mouseenter',sync)});
 const modules=isEN?{accueil:{title:'Front desk at the clinic',text:'An example learning path: understand the welcome steps, identify the information to collect and practise guiding a new client according to your clinic’s procedures.'},pratiques:{title:'Your internal practices',text:'An example learning path: find your clinic’s procedures, understand each role’s responsibilities and check your knowledge with contextual quizzes.'},situations:{title:'Scenarios',text:'An example learning path: practise a front-desk conversation, handle an unusual request and recognize when to ask a colleague or manager for help.'}}:{accueil:{title:'L’accueil en clinique',text:'Un exemple de parcours : comprendre les étapes d’accueil, repérer les informations à recueillir et s’exercer à orienter un nouveau client selon les procédures de l’établissement.'},pratiques:{title:'Vos pratiques internes',text:'Un exemple de parcours : retrouver les procédures de votre établissement, comprendre les responsabilités de chaque rôle et vérifier ses connaissances à l’aide de quiz contextualisés.'},situations:{title:'Mises en situation',text:'Un exemple de parcours : pratiquer une conversation à la réception, gérer une demande inhabituelle et identifier le bon moment pour demander l’aide d’un collègue ou du gestionnaire.'}};
@@ -112,22 +112,4 @@ document.getElementById('year').textContent=String(new Date().getFullYear());
  const stage = document.querySelector('.impact-stage'); if (!stage || !('IntersectionObserver' in window)) return;
  const io = new IntersectionObserver(entries => { if (entries.some(e => e.isIntersecting)) { stage.classList.add('play'); io.disconnect(); setTimeout(() => stage.classList.remove('play'), 2200); } }, {threshold: .35});
  io.observe(stage);
-})();
-
-// Vidéo : le clic sur l'affiche lance la lecture (son activé) ; l'affiche revient à la fin pour revoir.
-(() => {
- const card = document.querySelector('.vid-card'); if (!card) return;
- const play = card.querySelector('.vid-play'), video = card.querySelector('.vid-el'), cta = card.querySelector('.vid-cta b');
- const start = () => {
-  if (!video.getAttribute('src')) video.src = video.dataset.src;
-  video.hidden = false; card.classList.add('playing');
-  const p = video.play(); if (p && p.catch) p.catch(() => {});
-  video.focus({preventScroll: true});
- };
- play.addEventListener('click', start);
- video.addEventListener('ended', () => {
-  card.classList.remove('playing'); video.hidden = true; video.currentTime = 0;
-  if (cta) cta.textContent = 'Revoir la vidéo';
-  play.focus({preventScroll: true});
- });
 })();

@@ -2,12 +2,15 @@
   X-Frame-Options: DENY
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Permissions-Policy: camera=(), microphone=(self), geolocation=()
   Cache-Control: public, max-age=3600
 
 /assets/*
   Cache-Control: public, max-age=86400
 
 /agent/*
-  X-Robots-Tag: noindex, nofollow
+  X-Robots-Tag: noindex, nofollow, noarchive
   Cache-Control: no-cache
+
+/cloudflare-worker/*
+  X-Robots-Tag: noindex, nofollow

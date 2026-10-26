@@ -5,7 +5,7 @@ import { readFileSync } from "node:fs";
 import { generateKeyPair, exportJWK, exportPKCS8, SignJWT } from "../vendor/jose.js";
 import worker from "../agent-worker.js";
 
-const MIGRATION = readFileSync(new URL("../migrations/0001_comptes.sql", import.meta.url), "utf8");
+const MIGRATION = ["0001_comptes.sql", "0002_connexion_courriel.sql", "0003_codes_acces.sql", "0004_premier_acces.sql", "0005_favoris.sql"].map((f) => readFileSync(new URL("../migrations/" + f, import.meta.url), "utf8")).join("\n");
 export const ORIGIN = "https://laqualia.com";
 
 class Stmt {
@@ -35,6 +35,15 @@ const appleClient = await generateKeyPair("ES256", { extractable: true });
 const gJwk = { ...(await exportJWK(google.publicKey)), kid: "g1", alg: "RS256", use: "sig" };
 const aJwk = { ...(await exportJWK(apple.publicKey)), kid: "a1", alg: "ES256", use: "sig" };
 export const providerLog = [];
+export const modelLog = [];
+export const nutritionScript = []; // étapes { events: [...] } ou { status: 500 }
+export const turnstileLog = [];
+export class FakeKV {
+  constructor() { this.m = new Map(); }
+  async get(k) { return this.m.has(k) ? this.m.get(k) : null; }
+  async put(k, v) { this.m.set(k, String(v)); }
+  async delete(k) { this.m.delete(k); }
+}
 const pendingCodes = new Map(); // code -> { provider, claims }
 
 export function issueCode(provider, claims) { const code = "code_" + Math.random().toString(36).slice(2); pendingCodes.set(code, { provider, claims }); return code; }
@@ -56,6 +65,27 @@ globalThis.fetch = async (input, init = {}) => {
       .setIssuedAt().setExpirationTime(p.claims.expOverride || "10m").sign(key);
     return Response.json({ id_token, access_token: "x" });
   }
+  // Modèle simulé (aucun appel réel à Anthropic) : flux SSE minimal
+  if (url === "https://api.anthropic.com/v1/messages") {
+    const body = JSON.parse(String(init.body)); modelLog.push(body);
+    // Outil Nutrition : scénario SSE programmé par l'essai (outils serveur simulés)
+    if (nutritionScript.length && (Array.isArray(body.tools) || String(body.system || "").includes("Nutrition — Aide au conseil client"))) {
+      const step = nutritionScript.shift();
+      if (step.status) return new Response(JSON.stringify({ error: { message: "simulé" } }), { status: step.status });
+      return new Response(step.events.map((e) => `event: ${e.type}\ndata: ${JSON.stringify(e)}\n\n`).join(""), { headers: { "content-type": "text/event-stream" } });
+    }
+    const sse = `data: ${JSON.stringify({ type: "content_block_delta", delta: { type: "text_delta", text: "Réponse simulée." } })}\n\ndata: ${JSON.stringify({ type: "message_stop" })}\n\n`;
+    return new Response(sse, { headers: { "content-type": "text/event-stream" } });
+  }
+  // Turnstile simulé : « humain… » réussit ; « humain-autre-site » est émis pour un autre domaine
+  if (url === "https://challenges.cloudflare.com/turnstile/v0/siteverify") {
+    const b = JSON.parse(String(init.body)); turnstileLog.push(b);
+    const ok = String(b.response).startsWith("humain") && b.secret === "secret-turnstile-essai";
+    if (b.secret !== "secret-turnstile-essai") return Response.json({ success: false, "error-codes": ["invalid-input-secret"] });
+    return Response.json({ success: ok, "error-codes": ok ? [] : ["invalid-input-response"], hostname: b.response === "humain-autre-site" ? "pirate.example" : "laqualia.com" });
+  }
+  if (url.endsWith("/agent/config.json")) return Response.json({ name: "Assistant La Qualia", instructions: "Instructions d'essai.", examples: ["Exemple"] });
+  if (url.endsWith("/agent/docs/index.json")) return Response.json([]);
   throw new Error("Appel réseau inattendu pendant l'essai : " + url);
 };
 
@@ -63,8 +93,16 @@ export async function makeEnv() {
   return {
     DB: new FakeD1(), ADMIN_CODE: "Code-Plateforme-Test", ACCOUNT_ORIGIN: ORIGIN,
     GOOGLE_CLIENT_ID: "google-client", GOOGLE_CLIENT_SECRET: "google-secret",
+    AUTH_EMAIL: new FakeMailer(), AGENT_KV: new FakeKV(), ANTHROPIC_API_KEY: "cle-essai",
     APPLE_CLIENT_ID: "com.laqualia.web", APPLE_TEAM_ID: "TEAM123456", APPLE_KEY_ID: "KEY1234567", APPLE_PRIVATE_KEY: await exportPKCS8(appleClient.privateKey),
   };
+}
+
+// Envoi de courriels simulé : rien ne sort, les messages sont gardés pour l'essai.
+export class FakeMailer {
+  constructor() { this.sent = []; this.failNext = false; }
+  async send(m) { if (this.failNext) { this.failNext = false; throw Object.assign(new Error("refusé"), { code: "E_TEST" }); } this.sent.push(m); return { messageId: "test-" + this.sent.length }; }
+  lastCodeFor(to) { const m = [...this.sent].reverse().find((x) => x.to === to); return m && (m.text.match(/code : (\d{6})/) || [])[1]; }
 }
 
 // Navigateur simulé : garde ses témoins.
@@ -99,5 +137,13 @@ export class Browser {
     if (provider === "apple") res = await this.raw(`/auth/apple/callback`, { method: "POST", csrf: false, origin: "https://appleid.apple.com", headers: { "content-type": "application/x-www-form-urlencoded" }, body: new URLSearchParams({ code, state, ...(claims.__user ? { user: JSON.stringify(claims.__user) } : {}) }).toString() });
     else res = await this.raw(`/auth/google/callback?${new URLSearchParams({ code, state })}`);
     return { res, location: res.headers.get("location") || "", authUrl: au };
+  }
+  // Connexion par code courriel : demande, lecture du code dans le courriel simulé, saisie.
+  async loginEmail(email, { mode = "login", next, token, code } = {}) {
+    const start = await this.api("/auth/email/start", { method: "POST", body: { email, mode, next, token } });
+    if (start.status !== 200) return { start };
+    const c = code ?? this.env.AUTH_EMAIL.lastCodeFor(email.trim().toLowerCase());
+    const verify = await this.api("/auth/email/verify", { method: "POST", body: { code: c } });
+    return { start, verify, code: c };
   }
 }
