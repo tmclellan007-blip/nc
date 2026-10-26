@@ -86,18 +86,7 @@ dialog::backdrop{background:rgba(26,18,54,.45)!important;-webkit-backdrop-filter
 .admin span{color:var(--ink-2)!important}
 .fine{color:var(--ink-3)!important}
 
-/* ---------- Administration : onglets bien visibles ---------- */
-.tabs{background:#ebe6f5!important;border-bottom:1px solid var(--line-2)!important;align-items:center!important}
-.tabs .tab{--tc:#401098;--tcs:#efe9fc;height:42px!important;border-radius:12px!important;background:rgba(255,255,255,.72)!important;border:1px solid var(--line-2)!important;color:var(--ink)!important;transition:background-color .2s,border-color .2s}
-.tabs .tab.tsa{--tc:#0f766e;--tcs:#ddf3ef}
-.tabs .tab small{color:var(--ink-2)!important;opacity:1!important}
-.tabs .tab .ti{background:var(--tcs)!important;color:var(--tc)!important}
-.tabs .tab:hover{background:#fff!important;border-color:var(--tc)!important}
-.tabs .tab[aria-selected="true"]{background:#fff!important;border-color:var(--tc)!important;box-shadow:inset 0 -3px 0 var(--tc),0 6px 16px -8px rgba(28,22,49,.35)}
-.tabs .tab[aria-selected="true"] b{color:var(--tc)!important}
-.tabs .tab[aria-selected="true"] .ti{background:var(--tc)!important;color:#fff!important}
-.tabs .tlink{color:var(--ink)!important;border-radius:var(--pill)!important}
-.tabs .tlink:hover{background:#fff!important;color:var(--brand)!important}
+/* ---------- Administration : onglets d'origine conservés ---------- */
 .toc a{color:var(--ink-2)!important;border-radius:12px!important}
 .toc a:hover{background:var(--mist)!important;color:var(--ink)!important}
 .toc .rb{border-radius:var(--pill)!important}

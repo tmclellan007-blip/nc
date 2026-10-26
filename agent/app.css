@@ -23,23 +23,7 @@ body{background:var(--bg)!important;color:var(--ink)}
 ::selection{background:#d9ccf7;color:#2a0a66}
 textarea,input{caret-color:var(--brand)}
 
-/* ---------- Onglets du haut : chaque onglet bien visible, l'actif marqué par sa couleur ---------- */
-.app-tabs{background:#ebe6f5!important;border-bottom:1px solid var(--line-2)!important;align-items:center!important;gap:8px;padding-block:0!important}
-.app-tabs .role-sw,.app-tabs .dash-tab-wrap{display:flex;align-items:center;gap:6px}
-.app-tabs .role-tab{--tc:#401098;--tcs:#efe9fc;height:calc(var(--tabs-h) - 10px)!important;border-radius:12px!important;background:rgba(255,255,255,.72)!important;border:1px solid var(--line-2)!important;color:var(--ink)!important;box-shadow:none!important;transition:background-color .2s,border-color .2s,box-shadow .2s}
-.app-tabs .rt-tsa{--tc:#0f766e;--tcs:#ddf3ef}
-.app-tabs .rt-dash{--tc:#1d4ed8;--tcs:#e3ebfd}
-.app-tabs .role-tab b{color:var(--ink)!important}
-.app-tabs .role-tab small{color:var(--ink-2)!important;opacity:1!important}
-.app-tabs .rt-ico{background:var(--tcs)!important;color:var(--tc)!important;box-shadow:none!important}
-.app-tabs .role-tab:hover{background:#fff!important;border-color:var(--tc)!important}
-.app-tabs .role-tab[aria-selected="true"]{background:#fff!important;border-color:var(--tc)!important;box-shadow:inset 0 -3px 0 var(--tc),0 6px 16px -8px rgba(28,22,49,.35)!important}
-.app-tabs .role-tab[aria-selected="true"] b{color:var(--tc)!important}
-.app-tabs .role-tab[aria-selected="true"] .rt-ico{background:var(--tc)!important;color:#fff!important}
-.app-tabs .role-tab:focus-visible{outline:2px solid var(--tc)!important;outline-offset:2px!important}
-.app-tabs .rt-lock{color:var(--ink-2)!important}
-.tabs-admin{color:var(--ink)!important;border:1px solid var(--line-2)!important;background:#fff!important;border-radius:var(--pill)!important}
-.tabs-admin:hover{color:var(--brand)!important;border-color:var(--brand)!important}
+/* Onglets du haut : style d'origine conservé (barre foncée). */
 
 /* ---------- Barre latérale claire ---------- */
 .side,body.tsa .side,body.tsa.learn .side{background:var(--rail)!important;color:var(--ink)!important;border-right:1px solid var(--line);scrollbar-color:#cfc6e2 transparent!important}
