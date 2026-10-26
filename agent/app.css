@@ -86,3 +86,82 @@ body.side-mini .nav-item[aria-pressed="true"] .ni-ico{background:var(--brand-sof
 .model-badge{border-radius:var(--pill)!important;border-color:var(--line-2)!important}
 .model-pop{border-radius:var(--r-md)!important;border-color:var(--line)!important;box-shadow:var(--sh-3)!important}
 .top-av.org{border-radius:14px!important;border-color:var(--line)!important}
+
+/* =====================================================================
+   Amélioration de l'expérience (CSS seulement) — 2026-10-26
+   ===================================================================== */
+
+/* ---------- 1. Accueil de l'agent : plus présent, moins de vide ---------- */
+@media (min-width:861px){
+  .main.is-empty .composer-in,.main.is-empty .col{width:min(860px,100%)}
+  .hello2{gap:22px}
+  .hello2-av{width:92px;height:92px;padding:4px}
+  .hello2-txt h1{font-size:clamp(38px,4.4vw,56px)!important;letter-spacing:-.035em!important;color:var(--ink)}
+  .hello2-sub{font-size:clamp(19px,1.8vw,24px)!important;color:var(--ink-2)!important}
+  .main.is-empty .box{min-height:92px!important;border-radius:28px!important;padding:12px 12px 12px 18px!important}
+  .main.is-empty .box textarea{font-size:19.5px!important}
+  .main.is-empty .send{width:52px;height:52px}
+}
+.main.is-empty .box{border-color:var(--brand)}
+body.tsa .main.is-empty .box{border-color:#0f766e}
+/* Suggestions : vraies cartes cliquables, faciles à viser pendant un appel (les outils TSA ne changent pas) */
+.under{gap:12px!important}
+.under-lab{color:var(--ink-3)!important;letter-spacing:.12em!important}
+.under .cards{gap:12px!important}
+.under .card:not(.tool){position:relative;min-height:84px!important;padding:16px 52px 16px 18px!important;border-radius:20px!important;border:1px solid var(--line-2)!important;background:#fff!important;font-size:16px!important;font-weight:700!important;color:var(--ink)!important;box-shadow:var(--sh-1);gap:6px!important;justify-content:center;transition:border-color .2s,box-shadow .25s var(--ease),transform .25s var(--ease)!important}
+.under .card:not(.tool) .tag{font-size:11px!important;color:var(--ink-3)!important;letter-spacing:.12em}
+.under .card:not(.tool)::after{content:"";position:absolute;right:16px;top:50%;width:26px;height:26px;margin-top:-13px;border-radius:50%;background:var(--mist) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23401098' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14M13 6l6 6-6 6'/%3E%3C/svg%3E") center/14px no-repeat;transition:transform .25s var(--ease),background-color .2s}
+.under .card:not(.tool):hover{border-color:var(--brand)!important;box-shadow:var(--sh-2)!important;transform:translateY(-2px)!important}
+.under .card:not(.tool):hover::after{transform:translateX(3px);background-color:var(--brand-soft)}
+.under .card.train:not(.tool){background:var(--brand-soft)!important;border-color:#d8cbf8!important;color:var(--brand)!important}
+.under .card.train:not(.tool) .tag{color:var(--brand)!important}
+.under .card.train:not(.tool)::after{background-color:#fff}
+.notice2{font-size:13.5px!important;color:#6b4a2a!important}
+@media (max-width:860px){
+  .under .card:not(.tool){min-height:72px!important;padding:13px 40px 13px 14px!important;font-size:14.5px!important;border-radius:16px!important}
+  .under .card:not(.tool)::after{right:10px;width:22px;height:22px;margin-top:-11px;background-size:12px}
+}
+
+/* ---------- 2. Réponses : la réponse courte (à dire au téléphone) passe devant ---------- */
+.box-live{background:#effbf3!important;border:2px solid #57c483!important;border-radius:22px!important;box-shadow:0 2px 4px rgba(21,128,61,.06),0 16px 34px -18px rgba(21,128,61,.45)!important}
+.box-live .box-head{padding:14px 20px 0!important;font-size:12px!important;color:#0f6b34!important}
+.box-live .box-body{padding:10px 20px 20px!important;font-size:21px!important;line-height:1.5!important;font-weight:600!important;color:#06240f!important;letter-spacing:-.005em}
+.box-live .box-body strong,.box-live .say{color:#052e16!important}
+.bh-act{border-radius:var(--pill)!important;padding:7px 14px!important;font-size:13px!important}
+.box-learn{background:#faf9fc!important;border:1px solid var(--line)!important;border-radius:20px!important;box-shadow:none!important;margin-top:14px!important}
+.box-learn .box-head,.bh-toggle{color:var(--ink-2)!important}
+.bh-toggle:hover{background:var(--mist)!important}
+.bh-meta{color:var(--ink-3)!important}
+.box-learn .box-body{color:var(--ink-2)!important;font-size:15px!important}
+.box-learn .box-body h3{color:var(--ink)!important;border-top-color:var(--line)!important}
+.box-learn .box-body li::marker{color:var(--ink-3)!important}
+.box-learn .say{background:linear-gradient(transparent 60%,#ece7f7 60%)!important;color:var(--ink)!important}
+.more{border-radius:var(--pill)!important;border:1px solid var(--line-2)!important;color:var(--ink)!important;background:#fff!important}
+.more:hover{border-color:var(--brand)!important;color:var(--brand)!important}
+.keep{border:1px solid var(--line)!important;border-radius:14px!important}
+@media (max-width:860px){
+  .box-live .box-body{font-size:18.5px!important;padding:8px 16px 16px!important}
+  .box-live .box-head{padding:12px 16px 0!important}
+}
+
+/* ---------- 3. Barre latérale aérée : sous-titres au survol, sur l'élément actif et sur grand écran ---------- */
+.ni-txt small{display:block;max-height:0;opacity:0;overflow:hidden;transition:max-height .28s var(--ease),opacity .2s}
+.nav-item{padding-block:11px!important}
+.nav-item:hover .ni-txt small,.nav-item:focus-visible .ni-txt small,.nav-item[aria-pressed="true"] .ni-txt small{max-height:2.8em;opacity:1}
+@media (min-width:1440px) and (min-height:860px){
+  .ni-txt small{max-height:2.8em;opacity:1}
+  .nav-item{padding-block:9px!important}
+}
+.side-group{gap:6px!important}
+.side-label{margin-top:6px!important}
+
+/* ---------- 5. Mobile : cibles tactiles d'au moins 44 px ---------- */
+@media (max-width:860px){
+  .nav-item{min-height:52px}
+  .side-out,.side-foot a{min-height:44px;display:flex;align-items:center}
+  .menu-btn,.top-new{min-width:44px;min-height:44px}
+  .bh-act,.more,.st-seg [role=tab],.hist-clear{min-height:44px}
+  .box{min-height:60px}
+  .send{width:48px!important;height:48px!important}
+  .side-close,.side-collapse{width:44px!important;height:44px!important}
+}

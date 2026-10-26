@@ -94,3 +94,34 @@ dialog::backdrop{background:rgba(26,18,54,.45)!important;-webkit-backdrop-filter
 .toc a{color:var(--ink-2)!important;border-radius:12px!important}
 .toc a:hover{background:var(--mist)!important;color:var(--ink)!important}
 .toc .rb{border-radius:var(--pill)!important}
+
+/* =====================================================================
+   Amélioration de l'expérience (CSS seulement) — 2026-10-26
+   ===================================================================== */
+/* ---------- 4. Profil et membres : sections distinctes, actions à droite ---------- */
+.cards{gap:24px!important}
+.layout .card{padding:28px 30px!important}
+.layout .card>h2{font-size:20px!important;letter-spacing:-.015em!important}
+.layout .card>h2+.lead{padding-bottom:18px;margin-bottom:22px!important;border-bottom:1px solid var(--line)}
+.layout .card>h2:only-child,.layout .card>h2+:not(.lead){margin-bottom:16px}
+.item{display:grid!important;grid-template-columns:minmax(260px,1fr) minmax(0,auto) auto;align-items:center;column-gap:18px!important;padding:16px 12px!important;border-radius:16px;border-top-color:var(--line)!important;transition:background-color .2s}
+.item:hover{background:var(--mist)}
+.item .who{min-width:0!important}
+.item .tags{justify-content:flex-end;max-width:380px;justify-self:end}
+.item .who small{word-break:normal!important;overflow-wrap:anywhere}
+.item .acts{justify-content:flex-end;flex-wrap:nowrap!important}
+.item .acts .btn.sm{border-radius:var(--pill)!important}
+.badge{padding:4px 11px!important}
+.toolbar{padding:4px 0 14px;margin-bottom:8px!important;border-bottom:1px solid var(--line)}
+@media (max-width:1100px){
+  .item{grid-template-columns:minmax(0,1fr) auto;row-gap:10px}
+  .item .who{grid-column:1/-1}
+  .item .tags{justify-content:flex-start}
+}
+@media (max-width:640px){
+  .layout .card{padding:20px 18px!important}
+  .item{grid-template-columns:1fr;padding:14px 4px!important}
+  .item .acts{justify-content:flex-start;flex-wrap:wrap!important}
+  .item .acts .btn.sm{min-height:44px}
+  .btn{min-height:46px}
+}
