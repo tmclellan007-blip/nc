@@ -1,0 +1,103 @@
+@import url("https://fonts.googleapis.com/css2?family=Young+Serif&display=swap");
+/* =====================================================================
+   La Qualia — refonte des écrans de compte, d'accès et d'administration
+   (connexion, compte, invitation, acces, admin). Même monde que le site.
+   Chargée APRÈS les styles existants de chaque page.
+   Présentation seulement : aucun texte, aucune logique.
+   ===================================================================== */
+:root{
+  --bg:#fcfbf8;--mist:#f4f1fa;--mist-2:#ece7f7;--rail:#f7f5fb;
+  --ink:#1c1631;--ink-2:#4c4662;--ink-3:#6e6884;
+  --line:#e9e4f1;--line-2:#ddd6ea;
+  --brand:#401098;--brand-hover:#531fbd;--brand-soft:#efe9fc;
+  --pill:999px;
+  --sh-1:0 1px 2px rgba(28,22,49,.05),0 2px 8px -2px rgba(28,22,49,.06);
+  --sh-2:0 2px 4px rgba(28,22,49,.04),0 18px 40px -16px rgba(28,22,49,.16);
+  --sh-3:0 4px 10px rgba(28,22,49,.05),0 30px 70px -28px rgba(42,10,102,.28);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --paper:var(--bg);--muted:var(--ink-2);
+}
+body{background:var(--bg)!important;color:var(--ink)!important}
+::selection{background:#d9ccf7;color:#2a0a66}
+:focus-visible{outline:2px solid var(--brand)!important;outline-offset:2px}
+input,textarea{caret-color:var(--brand)}
+
+/* ---------- Barre du haut (compte, connexion, invitation) ---------- */
+.topbar{background:rgba(252,251,248,.86)!important;color:var(--ink)!important;border-bottom:1px solid var(--line)!important;-webkit-backdrop-filter:saturate(1.5) blur(14px);backdrop-filter:saturate(1.5) blur(14px)}
+.topbar .brand{color:var(--ink)!important}
+.topbar .brand small{color:var(--ink-3)!important;border-left-color:var(--line-2)!important}
+.topbar .tlink{color:var(--ink-2)!important;border-radius:var(--pill)!important}
+.topbar .tlink:hover{background:var(--mist)!important;color:var(--ink)!important}
+.chip-user{color:var(--ink)!important}
+
+/* ---------- Mise en page compte ---------- */
+.layout .side .nav a{color:var(--ink-2)!important;border-radius:14px!important}
+.layout .side .nav a svg{color:var(--ink-3)!important}
+.layout .side .nav a:hover{background:var(--mist)!important;color:var(--ink)!important}
+.layout .side .nav a[aria-current="page"]{background:#fff!important;color:var(--ink)!important;box-shadow:var(--sh-2)}
+.layout .side .nav a[aria-current="page"] svg{color:var(--brand)!important}
+.orgpick{border-color:var(--line)!important;border-radius:18px!important;box-shadow:var(--sh-1)}
+.orgpick label{color:var(--ink-3)!important;letter-spacing:.12em!important}
+.head h1{font-family:"Young Serif",Georgia,serif;font-weight:400!important;letter-spacing:-.02em!important;color:var(--ink)}
+.head p,.card .lead,.f .hint{color:var(--ink-2)!important}
+.card{border-color:var(--line)!important;border-radius:22px!important;box-shadow:var(--sh-1)}
+.card h2{color:var(--ink)}
+
+/* ---------- Champs ---------- */
+input[type=text],input[type=email],input[type=search],input[type=number],input[type=tel],select,textarea,.f input{border:1px solid var(--line-2)!important;border-radius:14px!important;background:#fbfaff!important;transition:border-color .2s,box-shadow .2s,background-color .2s}
+input[type=text]:hover,input[type=email]:hover,input[type=search]:hover,input[type=number]:hover,select:hover,textarea:hover,.f input:hover{border-color:#c6bcdc!important}
+input:focus,select:focus,textarea:focus,.f input:focus{border-color:var(--brand)!important;background:#fff!important;box-shadow:0 0 0 4px rgba(64,16,152,.12)!important;outline:0}
+body.tsa input:focus,body.tsa select:focus,body.tsa textarea:focus{border-color:var(--role)!important;box-shadow:0 0 0 4px rgba(15,118,110,.14)!important}
+.f input[aria-invalid="true"],input[aria-invalid="true"]{border-color:#b91c1c!important;box-shadow:0 0 0 4px rgba(185,28,28,.12)!important}
+.codein::placeholder{color:#8a849c!important}
+
+/* ---------- Boutons : pilules ---------- */
+.btn{border-radius:var(--pill)!important;transition:background-color .2s,border-color .2s,color .2s,transform .2s var(--ease)!important}
+.btn:not(.ghost):not(.danger){box-shadow:0 1px 2px rgba(42,10,102,.2),0 10px 24px -12px rgba(64,16,152,.55)}
+.btn:not(.ghost):hover{filter:none!important;transform:translateY(-1px)}
+.btn.ghost{border:1px solid var(--line-2)!important;background:#fff!important}
+.btn.ghost:hover{border-color:var(--brand)!important;color:var(--brand)!important}
+.btn.danger.ghost{border-color:#f0c4c4!important;color:#b91c1c!important}
+.prov{border-radius:var(--pill)!important;border:1px solid var(--line-2)!important;transition:border-color .2s}
+.prov:hover{border-color:var(--brand)!important}
+.prov.apple{border-color:#000!important}
+.linkbtn{color:var(--brand)!important}
+
+/* ---------- Fenêtres, messages ---------- */
+dialog{border-radius:24px!important;box-shadow:0 40px 100px -30px rgba(26,18,54,.5)!important}
+dialog::backdrop{background:rgba(26,18,54,.45)!important;-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px)}
+.toast{border-radius:var(--pill)!important;background:var(--ink)!important;padding:12px 22px!important}
+.toast.err{background:#b91c1c!important}
+.notice,.banner{border-radius:16px!important}
+.sheet{border:1px solid var(--line);border-radius:26px!important;box-shadow:var(--sh-3)!important}
+.sheet h1{font-family:"Young Serif",Georgia,serif;font-weight:400!important;letter-spacing:-.02em!important}
+
+/* ---------- Page d'accès (premier accès) ---------- */
+.art{background:var(--mist)!important;border-right:1px solid var(--line)!important;position:relative;overflow:hidden}
+.art::before{content:"";position:absolute;inset:auto -20% -30% auto;width:70%;aspect-ratio:1;border-radius:50%;background:#fff;opacity:.55}
+.art .logo{position:relative}
+.mhead{background:var(--mist)!important;border-bottom:1px solid var(--line)!important}
+.wl .card{border-color:var(--line)!important;border-radius:28px!important;box-shadow:var(--sh-3)!important}
+.wl .card h1{color:var(--ink)}
+.eyebrow{color:var(--brand)!important;letter-spacing:.14em!important}
+.wl .btn{min-height:54px}
+.admin a{border:1px solid var(--line-2)!important;border-radius:var(--pill)!important;color:var(--ink)!important;box-shadow:var(--sh-1)}
+.admin a:hover{border-color:var(--brand)!important;color:var(--brand)!important}
+.admin span{color:var(--ink-2)!important}
+.fine{color:var(--ink-3)!important}
+
+/* ---------- Administration : onglets bien visibles ---------- */
+.tabs{background:#ebe6f5!important;border-bottom:1px solid var(--line-2)!important;align-items:center!important}
+.tabs .tab{--tc:#401098;--tcs:#efe9fc;height:42px!important;border-radius:12px!important;background:rgba(255,255,255,.72)!important;border:1px solid var(--line-2)!important;color:var(--ink)!important;transition:background-color .2s,border-color .2s}
+.tabs .tab.tsa{--tc:#0f766e;--tcs:#ddf3ef}
+.tabs .tab small{color:var(--ink-2)!important;opacity:1!important}
+.tabs .tab .ti{background:var(--tcs)!important;color:var(--tc)!important}
+.tabs .tab:hover{background:#fff!important;border-color:var(--tc)!important}
+.tabs .tab[aria-selected="true"]{background:#fff!important;border-color:var(--tc)!important;box-shadow:inset 0 -3px 0 var(--tc),0 6px 16px -8px rgba(28,22,49,.35)}
+.tabs .tab[aria-selected="true"] b{color:var(--tc)!important}
+.tabs .tab[aria-selected="true"] .ti{background:var(--tc)!important;color:#fff!important}
+.tabs .tlink{color:var(--ink)!important;border-radius:var(--pill)!important}
+.tabs .tlink:hover{background:#fff!important;color:var(--brand)!important}
+.toc a{color:var(--ink-2)!important;border-radius:12px!important}
+.toc a:hover{background:var(--mist)!important;color:var(--ink)!important}
+.toc .rb{border-radius:var(--pill)!important}

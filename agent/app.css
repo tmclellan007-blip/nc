@@ -1,0 +1,100 @@
+/* =====================================================================
+   La Qualia — refonte de l'application (agent), 2026-10
+   Même monde que le site public (DESIGN.md) : clair, doux, précis.
+   Chargée APRÈS les styles intégrés de agent/index.html.
+   Présentation seulement : aucun texte, aucune logique.
+   ===================================================================== */
+
+:root{
+  --bg:#fcfbf8;--surface:#fff;--mist:#f4f1fa;--mist-2:#ece7f7;--rail:#f7f5fb;
+  --ink:#1c1631;--ink-2:#4c4662;--ink-3:#6e6884;
+  --line:#e9e4f1;--line-2:#ddd6ea;
+  --brand:#401098;--brand-hover:#531fbd;--brand-soft:#efe9fc;
+  --r-lg:24px;--r-md:18px;--r-sm:12px;--pill:999px;
+  --sh-1:0 1px 2px rgba(28,22,49,.05),0 2px 8px -2px rgba(28,22,49,.06);
+  --sh-2:0 2px 4px rgba(28,22,49,.04),0 18px 40px -16px rgba(28,22,49,.16);
+  --sh-3:0 4px 10px rgba(28,22,49,.05),0 30px 70px -28px rgba(42,10,102,.28);
+  --ease:cubic-bezier(.16,1,.3,1);
+  /* réutilisés par les styles existants */
+  --paper:var(--bg);--purple:var(--brand);--muted:var(--ink-2);
+  --app-line:var(--line);--app-soft:var(--mist);
+}
+body{background:var(--bg)!important;color:var(--ink)}
+::selection{background:#d9ccf7;color:#2a0a66}
+textarea,input{caret-color:var(--brand)}
+
+/* ---------- Onglets du haut : chaque onglet bien visible, l'actif marqué par sa couleur ---------- */
+.app-tabs{background:#ebe6f5!important;border-bottom:1px solid var(--line-2)!important;align-items:center!important;gap:8px;padding-block:0!important}
+.app-tabs .role-sw,.app-tabs .dash-tab-wrap{display:flex;align-items:center;gap:6px}
+.app-tabs .role-tab{--tc:#401098;--tcs:#efe9fc;height:calc(var(--tabs-h) - 10px)!important;border-radius:12px!important;background:rgba(255,255,255,.72)!important;border:1px solid var(--line-2)!important;color:var(--ink)!important;box-shadow:none!important;transition:background-color .2s,border-color .2s,box-shadow .2s}
+.app-tabs .rt-tsa{--tc:#0f766e;--tcs:#ddf3ef}
+.app-tabs .rt-dash{--tc:#1d4ed8;--tcs:#e3ebfd}
+.app-tabs .role-tab b{color:var(--ink)!important}
+.app-tabs .role-tab small{color:var(--ink-2)!important;opacity:1!important}
+.app-tabs .rt-ico{background:var(--tcs)!important;color:var(--tc)!important;box-shadow:none!important}
+.app-tabs .role-tab:hover{background:#fff!important;border-color:var(--tc)!important}
+.app-tabs .role-tab[aria-selected="true"]{background:#fff!important;border-color:var(--tc)!important;box-shadow:inset 0 -3px 0 var(--tc),0 6px 16px -8px rgba(28,22,49,.35)!important}
+.app-tabs .role-tab[aria-selected="true"] b{color:var(--tc)!important}
+.app-tabs .role-tab[aria-selected="true"] .rt-ico{background:var(--tc)!important;color:#fff!important}
+.app-tabs .role-tab:focus-visible{outline:2px solid var(--tc)!important;outline-offset:2px!important}
+.app-tabs .rt-lock{color:var(--ink-2)!important}
+.tabs-admin{color:var(--ink)!important;border:1px solid var(--line-2)!important;background:#fff!important;border-radius:var(--pill)!important}
+.tabs-admin:hover{color:var(--brand)!important;border-color:var(--brand)!important}
+
+/* ---------- Barre latérale claire ---------- */
+.side,body.tsa .side,body.tsa.learn .side{background:var(--rail)!important;color:var(--ink)!important;border-right:1px solid var(--line);scrollbar-color:#cfc6e2 transparent!important}
+.side::before{display:none!important}
+.side :focus-visible{outline:2px solid var(--brand)!important;outline-offset:2px}
+.side-close,.side-collapse,.su-edit,.side-shuffle{color:var(--ink-3)!important}
+.side-close:hover,.side-collapse:hover,.su-edit:hover,.side-shuffle:hover{background:var(--mist-2)!important;color:var(--ink)!important}
+.side-new{border-radius:var(--pill)!important;padding:12px 18px!important;box-shadow:0 1px 2px rgba(42,10,102,.2),0 10px 24px -12px rgba(64,16,152,.6)!important;transition:background-color .2s,transform .2s var(--ease)!important}
+.side-new:hover{background:var(--brand-hover)!important}
+body.tsa .side-new{background:#0f766e!important;box-shadow:0 1px 2px rgba(8,60,56,.2),0 10px 24px -12px rgba(15,118,110,.6)!important}
+.side-label,.model-lab{color:var(--ink-3)!important;letter-spacing:.12em!important}
+.side-label button{color:var(--ink-3)!important}
+.side-label button:hover{color:var(--ink)!important;background:var(--mist-2)!important}
+.nav-item{color:var(--ink)!important;border-radius:14px!important;transition:background-color .2s,box-shadow .2s!important}
+.nav-item:hover{background:var(--mist-2)!important}
+.ni-ico{background:#fff!important;color:var(--ink-2)!important;box-shadow:var(--sh-1)}
+.ni-txt small{color:var(--ink-3)!important}
+.nav-item[aria-pressed="true"],#sideJourney[aria-pressed="true"]{background:#fff!important;color:var(--ink)!important;box-shadow:var(--sh-2)!important}
+.nav-item[aria-pressed="true"] .ni-ico{background:var(--brand-soft)!important;color:var(--brand)!important;box-shadow:none}
+body.tsa .nav-item[aria-pressed="true"] .ni-ico{background:#ddf3ef!important;color:#0f766e!important}
+.nav-item[aria-pressed="true"] .ni-txt small{color:var(--ink-2)!important}
+.ni-count{background:var(--mist-2)!important;color:var(--ink-2)!important}
+.ni-demo{background:var(--mist-2)!important;color:var(--ink-2)!important}
+.side-item{color:var(--ink-2)!important}
+.side-item:hover{background:var(--mist-2)!important;color:var(--ink)!important}
+.side-sim{background:#fff!important;border:1px solid var(--line)!important;border-radius:var(--r-md)!important}
+.side-sim p{color:var(--ink-2)!important}.side-sim b{color:var(--ink)!important}
+.side-learn{border-color:var(--line-2)!important;color:var(--ink)!important}
+.side-learn:hover{background:var(--mist-2)!important}
+body.learn .side-learn{background:#fff!important;border-color:var(--line)!important;color:var(--ink)!important}
+.side-user,body.learn .side-user{background:#fff!important;border-color:var(--line)!important}
+.su-txt b{color:var(--ink)!important}.su-txt .status,.status{color:var(--ink-2)!important}
+.side-foot{border-top-color:var(--line)!important}
+.side-foot a,.side-me,.side-out{color:var(--ink-2)!important;border-radius:10px!important}
+.side-foot a:hover,.side-me:hover,.side-out:hover{color:var(--ink)!important;background:var(--mist-2)!important}
+.side-out.confirm{background:#dc2626!important;color:#fff!important}
+.model-seg,.side-foot .model-seg{background:var(--mist-2)!important}
+.model-opt{color:var(--ink-2)!important}
+.model-opt:hover{background:rgba(255,255,255,.7)!important;color:var(--ink)!important}
+.model-opt[aria-checked="true"],.side-foot .model-opt[aria-checked="true"]{background:#fff!important;color:var(--ink)!important;box-shadow:var(--sh-1)}
+body.side-mini .rail-btn{background:#fff!important;color:var(--ink-2)!important;box-shadow:var(--sh-1)}
+body.side-mini .rail-btn:hover{color:var(--ink)!important}
+body.side-mini .nav-item[aria-pressed="true"] .ni-ico{background:var(--brand-soft)!important;color:var(--brand)!important;box-shadow:0 0 0 2px var(--brand)!important}
+.st-seg{background:var(--mist-2)!important}
+.st-seg [role=tab]{color:var(--ink-2)!important}
+.st-seg [role=tab][aria-selected="true"]{background:#fff!important;color:var(--ink)!important;box-shadow:var(--sh-1)}
+.hist-clear{color:var(--ink-3)!important}
+.hist-clear:hover{color:var(--ink)!important;background:var(--mist-2)!important}
+.scrim{background:rgba(28,22,49,.35)!important;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+
+/* ---------- En-tête de la zone principale ---------- */
+.topbar{background:rgba(252,251,248,.85)!important;border-bottom-color:var(--line)!important;-webkit-backdrop-filter:saturate(1.5) blur(14px)!important;backdrop-filter:saturate(1.5) blur(14px)!important}
+.top-new{border-radius:var(--pill)!important;border:1px solid var(--line-2)!important;background:#fff!important;color:var(--ink)!important;box-shadow:var(--sh-1);transition:border-color .2s,color .2s}
+.top-new:hover{border-color:var(--brand)!important;color:var(--brand)!important}
+.menu-btn{border-radius:var(--pill)!important;border:1px solid var(--line-2)!important;box-shadow:none!important}
+.model-badge{border-radius:var(--pill)!important;border-color:var(--line-2)!important}
+.model-pop{border-radius:var(--r-md)!important;border-color:var(--line)!important;box-shadow:var(--sh-3)!important}
+.top-av.org{border-radius:14px!important;border-color:var(--line)!important}
