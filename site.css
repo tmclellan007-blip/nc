@@ -218,29 +218,13 @@ html{scrollbar-color:#c9bfdd var(--bg)}
 .lev-lb{border-radius:var(--r-lg)!important;background:var(--night)!important;color:#fff}
 .lev-lb::backdrop{background:rgba(26,18,54,.82)!important}
 
-/* ---------- Trois leviers sur fond sombre : les captures (claires) ressortent ---------- */
-.lev-stack>.lev.pil--formed,.lev-stack>.lev.pil--tooled,.lev-stack>.lev.pil--encadre{background:var(--night)!important;color:#fff}
-.lev-stack>.lev.pil--formed{background:radial-gradient(70% 60% at 100% 0%,rgba(124,77,230,.30),transparent 70%),var(--night)!important;--lt:#cdbcff}
-.lev-stack>.lev.pil--tooled{background:radial-gradient(70% 60% at 100% 0%,rgba(0,93,255,.26),transparent 70%),var(--night)!important;--lt:#9cc0ff}
-.lev-stack>.lev.pil--encadre{background:radial-gradient(70% 60% at 100% 0%,rgba(255,90,0,.20),transparent 70%),var(--night)!important;--lt:#ffb894}
-.lev-stack>.lev h3,.lev-stack>.lev.pil--tooled h3{color:#fff!important}
-.lev-stack>.lev h3 .u{color:var(--lt)!important}
-.lev-stack>.lev .pil-lead,.lev-stack>.lev .lev-copy .pil-lead{color:#d9d3ea!important}
-.lev-stack>.lev .lev-step:hover{background:rgba(255,255,255,.07)!important}
-.lev-stack>.lev .lev-step .ls-t strong{color:#fff!important}
-.lev-stack>.lev .lev-step .ls-t small{color:#bdb5d4!important}
-.lev-stack>.lev .lev-step img{border-color:rgba(255,255,255,.14)!important}
-.lev-stack>.lev .lev-step[aria-pressed=true]{background:#fff!important;box-shadow:0 18px 40px -18px rgba(0,0,0,.6)!important}
-.lev-stack>.lev .lev-step[aria-pressed=true] .ls-t strong{color:var(--band)!important}
-.lev-stack>.lev .lev-step[aria-pressed=true] .ls-t small{color:var(--ink-2)!important}
-.lev-stack>.lev .lev-step:focus-visible{outline-color:var(--lt)}
-.lev-stack>.lev .lev-shot{border:1px solid rgba(255,255,255,.14)!important;box-shadow:0 2px 6px rgba(0,0,0,.25),0 40px 90px -30px rgba(0,0,0,.75)!important}
-.lev-stack>.lev .lev-fig figcaption{color:#cfc8e2!important}
-.lev-stack>.lev .lev-fig figcaption strong{color:#fff!important}
-.lev-stack>.lev .lev-count{background:rgba(255,255,255,.12)!important;color:#fff!important;box-shadow:none!important}
-.lev-stack>.lev .lev-cta{border-color:transparent!important;box-shadow:0 20px 44px -22px rgba(0,0,0,.6)!important}
-.lev-stack>.lev .lev-cta:focus-within{outline:2px solid var(--lt);outline-offset:3px}
-.lev-stack>.lev :focus-visible{outline-color:var(--lt)!important}
+/* ---------- Trois leviers : lavande moyen, assez foncé pour détacher les captures claires ---------- */
+.lev-stack>.lev.pil--formed,.lev-stack>.lev.pil--tooled,.lev-stack>.lev.pil--encadre{background:#e3dcf2!important}
+.lev-stack>.lev .lev-shot{border:1px solid rgba(28,22,49,.16)!important;box-shadow:0 2px 6px rgba(28,22,49,.10),0 34px 70px -28px rgba(42,10,102,.45)!important}
+.lev-stack>.lev .lev-step:hover{background:rgba(255,255,255,.55)!important}
+.lev-stack>.lev .lev-step img{border-color:rgba(28,22,49,.12)!important}
+.lev-stack>.lev .lev-step .ls-t small{color:#463f5c!important}
+.lev-stack>.lev .lev-fig figcaption{color:#3f3955!important}
 
 /* ---------- Bénéfices ---------- */
 .potential{background:transparent!important;padding-top:clamp(72px,8vw,128px)!important}
