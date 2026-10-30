@@ -1,5 +1,5 @@
 {
-  "apiUrl": "https://laqualia-agent.tmclellan007.workers.dev",
+  "apiUrl": "/api/agent",
   "etablissement": "Nom de votre établissement",
   "logo": "",
   "name": "Assistant La Qualia",

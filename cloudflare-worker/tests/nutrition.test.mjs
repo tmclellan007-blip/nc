@@ -104,13 +104,18 @@ test("nutrition : réservée à l'espace TSA, session requise, aucun droit d'adm
   assert.ok(E.some((x) => x.t === "empty"));
 });
 
-test("nutrition (ancien accès par codes) : le code TSA reste exigé", async () => {
-  const env = { ...(await makeEnv()), TSA_CODE: "Code-TSA", ALLOWED_ORIGINS: "https://tmclellan007-blip.github.io" };
+test("anciens accès par codes partagés : retirés (aucune réponse de l'agent sans compte)", async () => {
+  const env = { ...(await makeEnv()), AGENT_CODE: "Code-Equipe", TSA_CODE: "Code-TSA", ADMIN_CODE: "Code-Admin", ALLOWED_ORIGINS: "https://tmclellan007-blip.github.io" };
   const b = new Browser(env);
-  const send = (h) => b.raw("/", { method: "POST", csrf: false, origin: "https://tmclellan007-blip.github.io", headers: h, body: { mode: "nutrition", role: "tsa", question: "Refus des croquettes ?" } });
-  assert.equal((await send({})).status, 403);
-  nutritionScript.push({ events: [...answer(0), ev.end()] });
-  assert.equal((await send({ "x-tsa-code": "Code-TSA" })).status, 200);
+  const n0 = modelLog.length;
+  const send = (h, body = { mode: "nutrition", role: "tsa", question: "Refus des croquettes ?" }) => b.raw("/", { method: "POST", csrf: false, origin: "https://tmclellan007-blip.github.io", headers: h, body });
+  assert.equal((await send({})).status, 404);
+  assert.equal((await send({ "x-agent-code": "Code-Equipe", "x-tsa-code": "Code-TSA" })).status, 404);
+  assert.equal((await send({ "x-agent-mode": "admin", "x-admin-code": "Code-Admin" }, { action: "load" })).status, 404);
+  assert.equal((await b.raw("/", { method: "GET", origin: "https://tmclellan007-blip.github.io", headers: { "x-agent-code": "Code-Equipe" } })).status, 404);
+  // Le portail sans session refuse aussi
+  assert.equal((await new Browser(env).raw("/api/agent", { method: "POST", body: { question: "Allo ?" } })).status, 401);
+  assert.equal(modelLog.length, n0, "aucun appel au modèle");
 });
 
 test("nutrition : outils refusés par l'API → réponse prudente sans fiche, signalée", async () => {

@@ -15,7 +15,7 @@ Les documents de ce dossier servent de base de connaissances à l'agent des tél
 ]
 ```
 
-4. Enregistrez (commit) sur GitHub. GitHub Pages republie le site en une à deux minutes, et l'agent utilise le nouveau document dans les 5 minutes qui suivent.
+4. Enregistrez (commit) sur GitHub. Cloudflare republie le site en une à deux minutes, et l'agent utilise le nouveau document dans les 5 minutes qui suivent.
 
 Le nom de fichier ne doit contenir ni barre oblique ni espace ; utilisez des tirets.
 

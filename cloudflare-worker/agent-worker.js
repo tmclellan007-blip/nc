@@ -1,14 +1,12 @@
 // Relais sécurisé de l'Assistant La Qualia — Cloudflare Worker.
-// Le site (GitHub Pages) est statique : ce Worker garde la clé API Anthropic
-// côté serveur et n'accepte que les requêtes venant des adresses autorisées.
+// Garde la clé API Anthropic côté serveur. Seul accès : un compte personnel sur laqualia.com
+// (routes /auth/*, /api/* et /api/agent, session vérifiée à chaque requête). Les anciens codes
+// partagés (code d'équipe, code TSA, code Admin en en-tête) et l'accès CORS depuis GitHub Pages
+// sont retirés.
 //
-// À coller dans Cloudflare > Workers & Pages > Create > Worker (voir LISEZMOI.md).
 // Variables du Worker (Settings > Variables and Secrets) :
 //   ANTHROPIC_API_KEY  (obligatoire, type « Secret »)
-//   AGENT_CODE         (recommandé, type « Secret ») code d'accès de l'équipe
-//   SITE_URL           adresse du site, ex. https://tmclellan007-blip.github.io/nc
-//   ALLOWED_ORIGINS    origines autorisées séparées par des virgules,
-//                      ex. https://tmclellan007-blip.github.io,https://www.laqualia.com
+//   SITE_URL           (facultatif) adresse du site, https://laqualia.com par défaut
 //   AGENT_MODEL        (facultatif) remplace le modèle choisi dans agent/config.json
 
 const MODELS = { quick: "claude-haiku-5-5", default: "claude-sonnet-5-5", complex: "claude-opus-5-5" };
@@ -74,27 +72,8 @@ export default {
     if (u0.pathname === "/api/agent") return handlePortal(request, env);
     // Module Comptes (connexion, profils, établissements) : servi sur le même site, sans CORS
     if (isAccountsRequest(u0)) return handleAccounts(request, env);
-    const cors = corsHeaders(request, env);
-    if (request.method === "OPTIONS") return new Response(null, { status: cors ? 204 : 403, headers: cors || {} });
-    if (!cors) return json(403, { error: "Origine non autorisée." }, {});
-    if (request.method === "GET") {
-      const tsa = !!env.TSA_CODE;
-      // Vérification du code TSA limitée en fréquence (contre les essais en série)
-      const ip0 = request.headers.get("cf-connecting-ip") || "?";
-      if (request.headers.get("x-tsa-code") && (rateLimited(ip0) || (await lockedOut(env, ip0)))) return json(429, { error: LOCK_MSG }, cors);
-      const tsaOk = tsa && tsaAuthorized(request, env);
-      if (request.headers.get("x-tsa-code") && tsa && !tsaOk) await recordFail(env, ip0, "TSA");
-      let pub = null;
-      try { pub = await publicConfig(request, env); } catch {}
-      return json(200, { ready: !!env.ANTHROPIC_API_KEY, needsCode: !!env.AGENT_CODE, voice: speechReady(env), tsa, tsaOk, admin: !!(env.ADMIN_CODE && env.AGENT_KV), pub }, cors);
-    }
-    if (request.method === "POST") {
-      const sp = request.headers.get("x-agent-mode");
-      if (sp === "tts" || sp === "stt") return handleSpeech(sp, request, env, cors);
-      if (sp === "admin") return handleAdmin(request, env, cors);
-      return handlePost(request, env, cors);
-    }
-    return json(405, { error: "Méthode non permise." }, cors);
+    // Anciens accès par codes partagés (GitHub Pages, workers.dev) : retirés
+    return json(404, { error: "Introuvable." }, {});
   },
 };
 
@@ -139,32 +118,11 @@ async function handleNutrition({ env, cors, body, question, history, ctxText, pr
   return new Response(stream, { headers: { ...cors, "content-type": "application/x-ndjson; charset=utf-8", "cache-control": "no-store", "x-agent-role": "tsa", "x-agent-model": model } });
 }
 
-function corsHeaders(request, env) {
-  const origin = request.headers.get("origin") || "";
-  const allowed = String(env.ALLOWED_ORIGINS || "").split(",").map((s) => s.trim().replace(/\/$/, "")).filter(Boolean);
-  if (!origin || !allowed.includes(origin)) return null;
-  return {
-    "access-control-allow-origin": origin,
-    "access-control-allow-methods": "GET, POST, OPTIONS",
-    "access-control-allow-headers": "content-type, x-agent-code, x-agent-mode, x-tsa-code, x-admin-code",
-    "access-control-expose-headers": "x-agent-sources, x-agent-model, x-agent-role",
-    "access-control-max-age": "86400",
-    vary: "origin",
-  };
-}
-
 async function handlePost(request, env, cors, auth = null) {
   if (!env.ANTHROPIC_API_KEY) return json(503, { error: "L'assistant n'est pas encore configuré : la clé API est manquante." }, cors);
-  const ip = request.headers.get("cf-connecting-ip") || "?";
-  if (!auth) {
-    if (await lockedOut(env, ip)) return json(429, { error: LOCK_MSG }, cors);
-    if (!(await teamAuthorized(request, env))) {
-      await recordFail(env, ip, "d'équipe");
-      return json(401, { error: "Code d'accès invalide." }, cors);
-    }
-  }
+  if (!auth) return json(401, { error: "Connexion requise.", code: "auth" }, cors);
 
-  if (rateLimited(auth ? "u:" + auth.userId : ip)) {
+  if (rateLimited("u:" + auth.userId)) {
     return json(429, { error: "Beaucoup de questions en peu de temps. Attendez quelques minutes, puis réessayez." }, cors);
   }
 
@@ -172,10 +130,6 @@ async function handlePost(request, env, cors, auth = null) {
   try { body = await request.json(); } catch { return json(400, { error: "Requête invalide." }, cors); }
   // Espace Équipe technique (TSA) : permission réelle vérifiée ici, pas seulement l'onglet choisi dans la page
   const role = body?.role === "tsa" ? "tsa" : "reception";
-  if (role === "tsa" && !auth) {
-    if (!env.TSA_CODE) return json(403, { error: "L'espace Équipe technique — TSA n'est pas activé.", needTsa: true }, cors);
-    if (!tsaAuthorized(request, env)) return json(403, { error: "Code TSA invalide ou manquant : accès à l'espace technique refusé.", needTsa: true }, cors);
-  }
   // Plafond quotidien global (toute l'équipe), compté dans Cloudflare KV
   const gate = await dailyGate(env);
   if (!gate.ok) return json(429, { error: `La limite quotidienne de ${gate.limit} questions pour l'équipe est atteinte. Elle se réinitialise à minuit. Votre gestionnaire peut l'ajuster dans Admin.` }, cors);
@@ -303,14 +257,6 @@ async function handlePost(request, env, cors, auth = null) {
   });
 }
 
-function tsaAuthorized(request, env) {
-  const a = String(request.headers.get("x-tsa-code") || "").trim();
-  const b = String(env.TSA_CODE || "").trim();
-  if (!a || !b || a.length !== b.length) return false;
-  let d = 0; for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return d === 0;
-}
-
 /* ---------- helpers ---------- */
 function json(status, data, cors) {
   return new Response(JSON.stringify(data), { status, headers: { ...cors, "content-type": "application/json; charset=utf-8", "cache-control": "no-store" } });
@@ -384,7 +330,7 @@ function streamSegments(segments, abort, total) {
 }
 
 async function asset(request, env, path) {
-  const base = String(env.SITE_URL || "https://tmclellan007-blip.github.io/nc").replace(/\/$/, "");
+  const base = String(env.SITE_URL || "https://laqualia.com").replace(/\/$/, "");
   const res = await fetch(base + path, { cf: { cacheTtl: 30 }, headers: { "user-agent": "laqualia-agent (Cloudflare Worker)", accept: "*/*" } });
   if (!res.ok) throw new Error(path);
   return res;
@@ -478,14 +424,7 @@ async function publicConfig(request, env) {
   return out;
 }
 
-/* ---------- page de configuration (protégée par ADMIN_CODE) ---------- */
-const adminFails = new Map();
-function adminAuthorized(request, env) {
-  const a = String(request.headers.get("x-admin-code") || "").trim(), b = String(env.ADMIN_CODE || "").trim();
-  if (!a || !b || a.length !== b.length) return false;
-  let d = 0; for (let i = 0; i < a.length; i++) d |= a.charCodeAt(i) ^ b.charCodeAt(i);
-  return d === 0;
-}
+/* ---------- page de configuration (administrateur de la plateforme seulement) ---------- */
 const str = (v, max) => String(v ?? "").replace(/\r/g, "").slice(0, max);
 const lines = (v, maxN, maxL) => (Array.isArray(v) ? v : String(v || "").split("\n")).map((x) => str(x, maxL).trim()).filter(Boolean).slice(0, maxN);
 function cleanConfig(c) {
@@ -507,17 +446,9 @@ function cleanConfig(c) {
 async function handleAdmin(request, env, cors, auth = null) {
   if (!env.AGENT_KV) return json(503, { error: "Le stockage AGENT_KV n'est pas relié au relais." }, cors);
   const ip = request.headers.get("cf-connecting-ip") || "?";
-  if (auth) {
-    // Connaître un code d'établissement ne donne jamais ce droit : seul l'administrateur de la plateforme configure l'agent.
-    if (!auth.platform) return json(403, { error: "La configuration de l'agent est réservée à l'administrateur de la plateforme.", code: "forbidden" }, cors);
-  } else {
-    if (!env.ADMIN_CODE) return json(503, { error: "La configuration n'est pas activée : ajoutez le secret ADMIN_CODE au relais." }, cors);
-    if (await lockedOut(env, ip)) return json(429, { error: LOCK_MSG }, cors);
-    if (!adminAuthorized(request, env)) {
-      await recordFail(env, ip, "Admin");
-      return json(401, { error: "Code de configuration invalide." }, cors);
-    }
-  }
+  if (!auth) return json(401, { error: "Connexion requise.", code: "auth" }, cors);
+  // Seul l'administrateur de la plateforme configure l'agent.
+  if (!auth.platform) return json(403, { error: "La configuration de l'agent est réservée à l'administrateur de la plateforme.", code: "forbidden" }, cors);
   let body; try { body = await request.json(); } catch { return json(400, { error: "Requête invalide." }, cors); }
   const role = ROLES.includes(body?.role) ? body.role : "reception";
   const KV = env.AGENT_KV;
@@ -528,10 +459,10 @@ async function handleAdmin(request, env, cors, auth = null) {
       invalidate();
       const { config, docs } = await loadRole(request, env, role);
       const edit = {}; EDITABLE.forEach((k) => { if (config[k] !== undefined) edit[k] = config[k]; });
-      return json(200, { role, config: edit, etablissement: config.etablissement || "", logo: config.logo || "", docs, customized: !!(await KV.get("cfg:" + role)), fileOk: !!cache?.fileOk, privacy: config.privacy || PRIVACY_DEFAULT, dailyLimit: await dailyLimit(env), usedToday: Number(await KV.get("use:" + torontoDate())) || 0, rotation: await rotationInfo(env), alerts: { ready: !!env.ALERT_EMAIL, to: ALERT_TO, lastError: (await KV.get("alert:lastError")) || "" } }, cors);
+      return json(200, { role, config: edit, etablissement: config.etablissement || "", logo: config.logo || "", docs, customized: !!(await KV.get("cfg:" + role)), fileOk: !!cache?.fileOk, privacy: config.privacy || PRIVACY_DEFAULT, dailyLimit: await dailyLimit(env), usedToday: Number(await KV.get("use:" + torontoDate())) || 0, rotation: { available: false }, alerts: { ready: !!env.ALERT_EMAIL, to: ALERT_TO, lastError: (await KV.get("alert:lastError")) || "" } }, cors);
     }
     case "save": {
-      await sendAlert(env, "cfg-" + role, `Configuration modifiée (${role === "tsa" ? "TSA" : "Réception"})`, [`Les réglages de l'espace ${role === "tsa" ? "Équipe technique — TSA" : "Réception"} ont été enregistrés depuis la page Admin.`, `Adresse IP : ${ip}`, "Si ce n'est pas vous, changez ADMIN_CODE dans Cloudflare."], 30 * 60);
+      await sendAlert(env, "cfg-" + role, `Configuration modifiée (${role === "tsa" ? "TSA" : "Réception"})`, [`Les réglages de l'espace ${role === "tsa" ? "Équipe technique — TSA" : "Réception"} ont été enregistrés depuis la page Admin.`, `Adresse IP : ${ip}`, "Si ce n'est pas vous, déconnectez tous les appareils de votre compte administrateur et vérifiez le journal."], 30 * 60);
       const clean = cleanConfig(body.config || {});
       const prev = (await kvJson(env, "cfg:" + role)) || {};
       await KV.put("cfg:" + role, JSON.stringify({ ...prev, ...clean, updated: new Date().toISOString() }));
@@ -645,13 +576,9 @@ function speechLimited(ip) {
 const xml = (t) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
 
 async function handleSpeech(kind, request, env, cors, auth = null) {
-  const ipS = request.headers.get("cf-connecting-ip") || "?";
-  if (!auth) {
-    if (await lockedOut(env, ipS)) return json(429, { error: LOCK_MSG }, cors);
-    if (!(await teamAuthorized(request, env))) { await recordFail(env, ipS, "d'équipe (voix)"); return json(401, { error: "Code d'accès invalide." }, cors); }
-  }
+  if (!auth) return json(401, { error: "Connexion requise.", code: "auth" }, cors);
   if (!speechReady(env)) return json(503, { error: "La voix Azure n'est pas configurée." }, cors);
-  if (speechLimited(auth ? "u:" + auth.userId : ipS)) return json(429, { error: "Trop de requêtes de voix. Attendez un peu." }, cors);
+  if (speechLimited("u:" + auth.userId)) return json(429, { error: "Trop de requêtes de voix. Attendez un peu." }, cors);
   const region = String(env.AZURE_SPEECH_REGION).trim().toLowerCase().replace(/[^a-z0-9]/g, "");
   const key = env.AZURE_SPEECH_KEY;
   const ctl = new AbortController();
@@ -715,7 +642,7 @@ async function dailyGate(env) {
     const limit = await dailyLimit(env);
     const used = Number(await env.AGENT_KV.get(key)) || 0;
     if (used >= limit) {
-      await sendAlert(env, "limit", "Limite quotidienne de questions atteinte", [`L'équipe a utilisé les ${limit} questions permises aujourd'hui. L'agent refuse les nouvelles questions jusqu'à minuit.`, "Si c'est normal, augmentez la limite dans Admin › Sécurité et confidentialité. Sinon, un code a peut-être été partagé."], 20 * 3600);
+      await sendAlert(env, "limit", "Limite quotidienne de questions atteinte", [`L'équipe a utilisé les ${limit} questions permises aujourd'hui. L'agent refuse les nouvelles questions jusqu'à minuit.`, "Si c'est normal, augmentez la limite dans Admin › Sécurité et confidentialité. Sinon, vérifiez l'activité des comptes."], 20 * 3600);
       return { ok: false, limit };
     }
     if (used + 1 === Math.ceil(limit * 0.8)) await sendAlert(env, "limit80", "80 % de la limite quotidienne utilisée", [`${used + 1} questions sur ${limit} ont été utilisées aujourd'hui.`], 20 * 3600);
@@ -732,74 +659,6 @@ const PRIVACY_DEFAULT = `Avant de commencer, merci de lire ces quelques règles.
 • Les réponses soutiennent la formation et le travail de l'équipe. Elles ne remplacent ni le jugement d'un médecin vétérinaire ni les procédures de l'établissement.
 
 Responsable de la protection des renseignements personnels : [nom et courriel à compléter dans Admin].`;
-
-
-/* ---------- blocage après plusieurs mauvais codes ---------- */
-const LOCK_MSG = "Trop d'essais avec un mauvais code. Pour votre sécurité, l'accès est bloqué 15 minutes depuis cet appareil.";
-const MAX_FAILS = 5, LOCK_SECONDS = 15 * 60;
-// Blocage après 5 mauvais codes (mettre à false pour le désactiver temporairement)
-const LOCKOUT_ON = true;
-const memFails = new Map(); // filet si le stockage n'est pas relié
-async function lockedOut(env, ip) {
-  if (!LOCKOUT_ON) return false;
-  if (!env.AGENT_KV) { const l = memFails.get(ip); return !!l && l.n >= MAX_FAILS && Date.now() - l.t < LOCK_SECONDS * 1000; }
-  try { return !!(await env.AGENT_KV.get("lock:" + ip)); } catch { return false; }
-}
-async function recordFail(env, ip, kind = "") {
-  if (!LOCKOUT_ON) return;
-  if (!env.AGENT_KV) { const l = memFails.get(ip) || { n: 0, t: Date.now() }; if (Date.now() - l.t > LOCK_SECONDS * 1000) { l.n = 0; l.t = Date.now(); } l.n++; memFails.set(ip, l); return; }
-  try {
-    const n = (Number(await env.AGENT_KV.get("fail:" + ip)) || 0) + 1;
-    if (n >= MAX_FAILS) {
-      await env.AGENT_KV.put("lock:" + ip, "1", { expirationTtl: LOCK_SECONDS }); await env.AGENT_KV.delete("fail:" + ip);
-      await sendAlert(env, "lock", `Blocage : ${MAX_FAILS} mauvais codes ${kind}`, [
-        `Un appareil a entré ${MAX_FAILS} mauvais codes ${kind} de suite. Il est bloqué ${LOCK_SECONDS / 60} minutes.`,
-        `Adresse IP : ${ip}`,
-        kind === "Admin" ? "Il s'agit du code de configuration : si ce n'est pas vous, changez ADMIN_CODE dans Cloudflare." : "Si cela se répète, changez le code concerné (ou activez le code d'équipe mensuel dans Admin).",
-      ], 15 * 60);
-    }
-    else await env.AGENT_KV.put("fail:" + ip, String(n), { expirationTtl: LOCK_SECONDS });
-  } catch {}
-}
-
-/* ---------- code d'équipe mensuel (dérivé du secret AGENT_CODE) ---------- */
-const WORDS = ["Lapin", "Chaton", "Moka", "Pomme", "Plume", "Cerise", "Biscuit", "Nuage", "Luna", "Maxou", "Praline", "Soleil", "Caramel", "Pistache", "Bambou", "Noisette", "Fleur", "Rocky", "Simba", "Bijou", "Galet", "Prune", "Kiwi", "Tulipe", "Sapin", "Erable", "Lilas", "Muscade", "Olive", "Perle", "Zebre", "Toutou"];
-const normCode = (c) => String(c || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
-async function monthCode(env, ym) {
-  const key = await crypto.subtle.importKey("raw", new TextEncoder().encode("lq-rotation:" + env.AGENT_CODE), { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
-  const b = new Uint8Array(await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(ym)));
-  return `${WORDS[b[0] % WORDS.length]}-${WORDS[b[1] % WORDS.length]}-${String(((b[2] << 8) | b[3]) % 90 + 10)}`;
-}
-const ymOf = (y, m) => `${y}-${String(m).padStart(2, "0")}`;
-function months() {
-  const [y, m, d] = torontoDate().split("-").map(Number);
-  const prev = m === 1 ? ymOf(y - 1, 12) : ymOf(y, m - 1);
-  const next = m === 12 ? ymOf(y + 1, 1) : ymOf(y, m + 1);
-  return { cur: ymOf(y, m), prev, next, day: d };
-}
-const GRACE_DAYS = 7; // l'ancien code reste accepté les 7 premiers jours du mois
-async function rotationOn(env) { const sh = (await kvJson(env, "cfg:shared")) || {}; return !!sh.rotate; }
-async function teamAuthorized(request, env) {
-  if (!env.AGENT_CODE) return true;
-  const given = request.headers.get("x-agent-code") || "";
-  // Espaces ou retour de ligne collés par mégarde dans le secret : ignorés
-  if (!(await rotationOn(env))) return given.trim() === String(env.AGENT_CODE).trim();
-  const M = months(), g = normCode(given);
-  if (!g) return false;
-  if (g === normCode(await monthCode(env, M.cur))) return true;
-  if (M.day <= GRACE_DAYS && g === normCode(await monthCode(env, M.prev))) return true;
-  return false;
-}
-async function rotationInfo(env) {
-  if (!env.AGENT_CODE) return { available: false };
-  const M = months();
-  const [ny, nm] = M.next.split("-").map(Number);
-  return {
-    available: true, enabled: await rotationOn(env),
-    current: await monthCode(env, M.cur), next: await monthCode(env, M.next),
-    month: M.cur, changesOn: `${ny}-${String(nm).padStart(2, "0")}-01`, graceDays: GRACE_DAYS,
-  };
-}
 
 
 /* ---------- alertes par courriel (Cloudflare Email Service) ---------- */
@@ -827,7 +686,7 @@ async function sendAlert(env, type, subject, lines, throttleSec = 3600, force = 
 async function healthCheck(env) {
   const problems = [];
   try { const r = await asset(null, env, "/agent/config.json"); const c = await r.json(); if (!c.instructions) problems.push("Le fichier agent/config.json est lisible mais sans instructions."); }
-  catch { problems.push("Le fichier agent/config.json du site est inaccessible (site GitHub Pages en panne ou SITE_URL incorrect)."); }
+  catch { problems.push("Le fichier agent/config.json du site est inaccessible (site laqualia.com en panne ou SITE_URL incorrect)."); }
   if (!env.ANTHROPIC_API_KEY) problems.push("Le secret ANTHROPIC_API_KEY est absent.");
   else {
     // Deux essais espacés de 20 s : un refus passager d'Anthropic ne doit pas déclencher de fausse alerte.

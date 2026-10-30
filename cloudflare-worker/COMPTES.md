@@ -55,7 +55,7 @@
 - **Droits** :
   - un Membre utilise la Réception, la TSA et le tableau de bord ;
   - la page Admin de l'agent est réservée à l'administrateur de la plateforme.
-- **Miroir** : le miroir GitHub Pages `nc` garde l'ancien accès par codes d'équipe.
+- **Anciens accès retirés** : le code d'équipe (`AGENT_CODE`), le code TSA (`TSA_CODE`), le code Admin en en-tête et l'accès depuis GitHub Pages ou `workers.dev` ne fonctionnent plus. Le relais n'est joignable que par `laqualia.com/auth/*` et `laqualia.com/api/*`. `ADMIN_CODE` ne sert plus qu'à nommer le tout premier administrateur de la plateforme ; la clé des codes d'invitation est `ACCESS_CODE_KEY`.
 
 ### Protection anti-robots (Cloudflare Turnstile)
 - **Où** : la page d'accès (« Accéder au portail ») et l'envoi du code par courriel de la Connexion administrateur.

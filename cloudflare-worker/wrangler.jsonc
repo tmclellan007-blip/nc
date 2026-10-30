@@ -8,7 +8,7 @@
   "main": "agent-worker.js",
   "compatibility_date": "2026-10-01",
   "keep_vars": true,
-  "workers_dev": true,
+  "workers_dev": false,
   // Vérification automatique du site, de la clé API et du stockage toutes les 6 heures
   "triggers": { "crons": ["17 */6 * * *"] },
   // Alertes par courriel (Cloudflare Email Service) vers le propriétaire
